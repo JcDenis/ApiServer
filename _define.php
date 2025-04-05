@@ -33,6 +33,6 @@ $this->registerModule(
         'support'     => 'https://github.com/JcDenis/ApiServer/issues',
         'details'     => 'https://github.com/JcDenis/ApiServer',
         'repository'  => 'https://raw.githubusercontent.com/JcDenis/ApiServer/master/dcstore.xml',
-        'date'        => '2025-04-05T09:01:11+00:00',
+        'date'        => '2025-04-05T14:04:39+00:00',
     ]
 );
