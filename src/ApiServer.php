@@ -175,6 +175,18 @@ class ApiServer
     }
 
     /**
+     * Get a API called URI arg.
+     *
+     * @param   int     $arg    The arg number
+     *
+     * @return  string
+     */
+    public function getArg(int $arg): string
+    {
+        return $this->get[$arg] ?? '';
+    }
+
+    /**
      * Get API called URI args.
      *
      * @return  array<int, string>

@@ -37,8 +37,8 @@ class UserEndpoint extends ApiServerEndpoint
         // Additonal user info
         $more = new ArrayObject();
 
-        # --BEHAVIOR-- ApiServerUserEndpointContent -- ApiServer, ArrayObject
-        App::behavior()->callBehavior(My::id() . 'UserEndpointContent', $this->api, $more);
+        # --BEHAVIOR-- ApiServerUserEndpointContent -- ApiServerEndpoint, ArrayObject
+        App::behavior()->callBehavior(My::id() . 'UserEndpointContent', $this, $more);
 
         foreach ($more as $key => $value) {
             if (!array_key_exists($key, $content) && (is_string($value) || is_int($value))) { // @phpstan-ignore-line

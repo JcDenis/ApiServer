@@ -122,6 +122,14 @@ class ApiServerEndpoint
     }
 
     /**
+     * Get current user ID.
+     */
+    public function getUser(): string
+    {
+        return $this->token->user ?? '';
+    }
+
+    /**
      * Check user permissions.
      *
      * Used to authenticate user or check user authorization.
@@ -172,6 +180,30 @@ class ApiServerEndpoint
         if ($cache->code !== 110) {
             $this->sendContent($cache);
         }
+    }
+
+    /**
+     * Quick throw exception.
+     *
+     * @see     ApiServerException
+     *
+     * @param   int     $code   The exception code
+     */
+    protected function setException(int $code): void
+    {
+        throw new ApiServerException($code);
+    }
+
+    /**
+     * Quick send content.
+     *
+     * @see     sendContent
+     * 
+     * @param   array<string, mixed>    $content    The response content array
+     */
+    protected function setContent(array $content): void
+    {
+        $this->sendContent(new ApiServerResponse($content));
     }
 
     /**
