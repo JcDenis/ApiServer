@@ -23,7 +23,6 @@ $this->registerModule(
         'requires' => [
             ['php', '8.3'],
             ['core', '2.34'],
-            ['FrontendSession', '0.14'], // required for public session
         ],
         'settings' => [
             'blog' => '#params.ApiServer_params',

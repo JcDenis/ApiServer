@@ -16,7 +16,6 @@ _ApiServer_ is a plugin for the open-source web publishing software called [Dotc
 
 * Dotclear 2.34
 * PHP 8.3+
-* Plugin FrontendSession
 
 ## USAGE
 
@@ -24,7 +23,8 @@ _ApiServer_ is a plugin for the open-source web publishing software called [Dotc
 * Active public API in Blog preferences
 * Set per user API rate limit in User preferences
 
-This plugin does not serv usefull API endpoint by itself, you must use other linked plugins for that.
+* This plugin does not serv usefull API endpoint by itself, you must use other linked plugins for that.
+* Plugin FrontendSession can be used to allow people registration on your blog.
 
 ## LINKS
 

@@ -6,7 +6,6 @@ namespace Dotclear\Plugin\ApiServer;
 
 use Dotclear\App;
 use Dotclear\Helper\Network\Http;
-use Dotclear\Plugin\FrontendSession\My as MyFS;
 
 /**
  * @brief       ApiServer core endpoint.
@@ -134,8 +133,8 @@ class ApiServerEndpoint
      *
      * Used to authenticate user or check user authorization.
      * * User permissions are per blog
-     * * User MUST have ApiServer AND FrontendSession permissions
-     * * User status MUST be valid in plugin FrontendSession
+     * * User MUST have ApiServer
+     * * User status MUST be valid
      */
     protected function setUser(string $username, ?string $password = null): void
     {
@@ -148,8 +147,6 @@ class ApiServerEndpoint
             // Check user perms
         } elseif (App::auth()->checkUser($username, $password, null, false)   === true
          && App::auth()->check(My::id(), App::blog()->id()) === true
-         && App::auth()->check(MyFS::id(), App::blog()->id()) === true // @phpstan-ignore-line
-         && (int) App::auth()->getInfo('user_status') != MyFS::USER_PENDING // @phpstan-ignore-line
          && !App::status()->user()->isRestricted((int) App::auth()->getInfo('user_status'))
          && !App::auth()->mustChangePassword()
         ) {
