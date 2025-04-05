@@ -64,7 +64,7 @@ class BackendBehaviors
                     ->items([
                         (new Number(My::id() . 'rate_limit', 10, 9999))
                             ->value((string) (is_array($res) && isset($res['limit']) ? $res['limit'] : ApiServerRate::LIMIT))
-                            ->label((new Label(__('API call rate limit:'), Label::OL_TF))),
+                            ->label((new Label(sprintf(__('API call limit per %d seconds:'), ApiServerRate::RESET), Label::OL_TF))),
                     ]),
             ])
             ->render();
