@@ -18,12 +18,12 @@ $this->registerModule(
     'Dotclear public API',
     'Serv your blog through API',
     'Jean-Chirstian Paul Denis',
-    '0.1',
+    '0.2',
     [
         'requires' => [
             ['php', '8.3'],
             ['core', '2.34'],
-            ['FrontendSession', '0.12'], // required for public session
+            ['FrontendSession', '0.14'], // required for public session
         ],
         'settings' => [
             'blog' => '#params.ApiServer_params',
