@@ -37,6 +37,7 @@ class ApiServerCache
         private bool $use_cache = true,
         private readonly int $cache_lifetime = 600 // 10 minutes cache
     ) {
+        Http::$cache_max_age = $this->getLifetime();
     }
 
     /**
