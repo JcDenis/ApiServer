@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\ApiServer;
 
+use ArrayObject;
 use Dotclear\App;
 use Throwable;
 
@@ -92,9 +93,7 @@ class ApiServer
 
             // Register all endpoints (endpoints list is sent on authentication)
             $this->addDefaultEndpoints();
-
-            # --BEHAVIOR-- ApiServerAddEndpoint -- ApiServer
-            App::behavior()->callBehavior(My::id() . 'AddEndpoint', $this);
+            $this->addEndpoints();
 
             // Check if called endpoint exists
             if (!isset($this->endpoints[$this->endpoint])) {
@@ -127,26 +126,28 @@ class ApiServer
      */
     private function addDefaultEndpoints(): void
     {
-        $this->addEndpoint([
-            Endpoint\AuthEndpoint::class,
-            Endpoint\UserEndpoint::class,
-            Endpoint\EndpointsEndpoint::class,
-            Endpoint\CodesEndpoint::class,
-        ]);
+        $this->endpoints = [
+            Endpoint\AuthEndpoint::ID      => Endpoint\AuthEndpoint::class,
+            Endpoint\UserEndpoint::ID      => Endpoint\UserEndpoint::class,
+            Endpoint\EndpointsEndpoint::ID => Endpoint\EndpointsEndpoint::class,
+            Endpoint\CodesEndpoint::ID     => Endpoint\CodesEndpoint::class,
+        ];
     }
 
     /**
      * Register endpoints.
      *
      * First come, first serv, an endpoint is not registered if its ID is already taken.
-     *
-     * @param   array<int, string>  $endpoints  The endpoints class name.
      */
-    public function addEndpoint(array $endpoints): void
+    private function addEndpoints(): void
     {
+        $endpoints = new ArrayObject();
+
+        # --BEHAVIOR-- ApiServerAddEndpoint -- ApiServer
+        App::behavior()->callBehavior(My::id() . 'AddEndpoint', $endpoints);
+
         foreach ($endpoints as $endpoint) {
-            if ($endpoint !== ''
-                && is_subclass_of($endpoint, ApiServerEndpoint::class)
+            if (is_subclass_of($endpoint, ApiServerEndpoint::class)
                 && in_array($this->version, $endpoint::VERSIONS)
                 && !isset($this->endpoints[(string) $endpoint::ID])
             ) {
