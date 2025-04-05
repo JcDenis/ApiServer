@@ -37,7 +37,7 @@ class ApiServerException extends Exception
 
         Http::head($head ?? $code);
         ApiServer::sendHeaders();
-        echo (new ApiServerResponse(code: $code, message: $message))->getContent();
+        echo (new ApiServerResponse(code: $code, message: $message))->encode();
         exit(1);
     }
 

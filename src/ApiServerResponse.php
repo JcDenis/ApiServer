@@ -32,7 +32,7 @@ class ApiServerResponse
     /**
      * Get json encoded response content.
      */
-    public function getContent(): string
+    public function encode(): string
     {
         return (string) json_encode([
             'code'    => $this->code,
@@ -45,12 +45,17 @@ class ApiServerResponse
     /**
      * Decode a json encoded content.
      *
-     * @param 	string 	$content 	The content to decode.
-     *
-     * @return  array<int|string, mixed>
+     * @param 	string 	$content 	The json encoded content.
      */
-    public static function decode(string $content): array
+    public static function decode(string $content): ApiServerResponse
     {
-        return json_decode((string) ($content ?: json_encode([])), true);
+        $res = json_decode((string) ($content ?: json_encode([])), true);
+
+        return new self(
+            code:    $res['code'] ?? 110,
+            message: $res['message'] ?? '',
+            content: $res['content'] ?? [],
+            cache:   true,
+        );
     }
 }

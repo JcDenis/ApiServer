@@ -128,12 +128,12 @@ class ApiServerCache
      */
     public function readCache(): ApiServerResponse
     {
-        $res = $this->expiredCache() ? [] : ApiServerResponse::decode((string) file_get_contents($this->getFile()));
+        $rsp = $this->expiredCache() ? new ApiServerResponse(code: 110) : ApiServerResponse::decode((string) file_get_contents($this->getFile()));
 
         return new ApiServerResponse(
-            code:    $res['code'] ?? 110,
-            message: $res['message'] ?? '',
-            content: $res['content'] ?? [],
+            code:    $rsp->code,
+            message: $rsp->message,
+            content: $rsp->content,
             cache:   true,
         );
     }
@@ -148,7 +148,7 @@ class ApiServerCache
         if (!$content->cache && !$this->expiredCache()) {
             $file = $this->getFile();
             Files::makeDir(dirname($file), true);
-            Files::putContent($file, $content->getContent());
+            Files::putContent($file, $content->encode());
             Files::inheritChmod($file);
         }
     }

@@ -226,7 +226,7 @@ class ApiServerEndpoint
         Http::head($content->code);
 
         // Send content
-        echo $content->getContent();
+        echo $content->encode();
 
         exit;
     }
