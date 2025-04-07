@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\ApiServer;
 
+use Dotclear\App;
 use Dotclear\Database\Cursor;
 use Dotclear\Database\MetaRecord;
 use Dotclear\Helper\Html\Form\Checkbox;
@@ -12,6 +13,7 @@ use Dotclear\Helper\Html\Form\Fieldset;
 use Dotclear\Helper\Html\Form\Label;
 use Dotclear\Helper\Html\Form\Legend;
 use Dotclear\Helper\Html\Form\Number;
+use Dotclear\Helper\Html\Form\None;
 use Dotclear\Helper\Html\Form\Para;
 use Dotclear\Helper\Html\Form\Text;
 use Dotclear\Interface\Core\BlogSettingsInterface;
@@ -77,6 +79,8 @@ class BackendBehaviors
      */
     public static function adminBlogPreferencesFormV2(BlogSettingsInterface $blog_settings): void
     {
+        $rs = App::log()->getLogs(['log_table' => My::id() . 'rate', 'limit' => 1]);
+
         echo (new Fieldset(My::id() . '_params'))
             ->legend(new Legend(My::name()))
             ->fields([
@@ -85,6 +89,12 @@ class BackendBehaviors
                         (new Checkbox(My::id() . 'active', $blog_settings->get(My::id())->get('active')))
                             ->value(1)
                             ->label((new Label(__('Enable public API for this blog'), Label::IL_FT))),
+                    ]),
+                $rs->isEmpty() ? new None() : (new Para())
+                    ->items([
+                        (new Checkbox(My::id() . 'reset', false))
+                            ->value(1)
+                            ->label((new Label(sprintf(__('Reset anonymous API calls limit. (%d/%d remaining)'), (int) $rs->f('log_msg'), ApiServerRate::LIMIT), Label::IL_FT))),
                     ]),
             ])
             ->render();
@@ -97,6 +107,12 @@ class BackendBehaviors
      */
     public static function adminBeforeBlogSettingsUpdate(BlogSettingsInterface $blog_settings): void
     {
+        if (!empty($_POST[My::id() . 'reset'])) {
+            $rs = App::log()->getLogs(['log_table' => My::id() . 'rate']);
+            while ($rs->fetch()) {
+                App::log()->delLog((int) $rs->f('log_id'));
+            }
+        }
         $blog_settings->get(My::id())->put('active', !empty($_POST[My::id() . 'active']), 'boolean');
     }
 }
