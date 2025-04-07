@@ -43,7 +43,7 @@ class Prepend extends Process
         App::url()->register(
             My::id(),
             'api',
-            '^api/(\w+)(/.+)?(/)?$',
+            '^api/((\w+)(/.+)?(/)?)$',
             function (?string $args): void { new ApiServer((string) $args); }
         );
 
