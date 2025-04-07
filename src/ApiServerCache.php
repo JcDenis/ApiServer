@@ -120,7 +120,7 @@ class ApiServerCache
         $file = $this->getFile();
         clearstatcache();
 
-        return !$this->useCache() || !file_exists($file) || ((int) filemtime($file) + $this->getLifetime()) >= time();
+        return !$this->useCache() || !file_exists($file) || ((int) filemtime($file) + $this->getLifetime()) < time();
     }
 
     /**
@@ -145,7 +145,7 @@ class ApiServerCache
      */
     public function writeCache(ApiServerResponse $content): void
     {
-        if (!$content->cache && !$this->expiredCache()) {
+        if (!$content->cache && $this->expiredCache()) {
             $file = $this->getFile();
             Files::makeDir(dirname($file), true);
             Files::putContent($file, $content->encode());
