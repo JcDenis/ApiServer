@@ -66,9 +66,28 @@ class ApiServerRate
     {
         $this->reset  = self::getRateTime();
 
-        // Get user options
-        $rate    = App::auth()->getOption(My::id());
-        $options = App::auth()->getOptions();
+        if ($user === '') {
+            // Get anonymous rate limit
+            $rate = [
+                'limit'  => $this->limit,
+                'remain' => $this->remain,
+                'reset'  => $this->reset,
+            ];
+            // Get remaining call from log
+            $rs = App::log()->getLogs([
+                'log_table' => My::id() . 'rate',
+                'limit'     => 1,
+            ]);
+            if (!$rs->isEmpty()) {
+                $dt             = DateTime::createFromFormat('Y-m-d H:i:s', $rs->f('log_dt'), new DateTimeZone('UTC'));
+                $rate['remain'] = (int) $rs->f('log_msg');
+                $rate['reset']  = $dt ? $dt->format('U') : time();
+            }
+        } else {
+            // Get authenticate rate limit
+            $rate    = App::auth()->getOption(My::id());
+            $options = App::auth()->getOptions();
+        }
 
         // Parse user values
         if (is_array($rate)) {
@@ -107,10 +126,27 @@ class ApiServerRate
                 'remain' => $this->remain,
                 'reset'  => $this->reset,
             ];
-            $cur               = App::auth()->openUserCursor();
-            $cur->user_options = new ArrayObject($options);
 
-            App::auth()->sudo([App::users(), 'updUser'], $user, $cur);
+            if ($user === '') {
+                // Clean old logs
+                while (App::log()->getLogs(['log_table' => My::id() . 'rate'])->fetch()) {
+                    App::log()->delLog((int) $rs->f('log_id'));
+                }
+
+                // Set anonymous rate limit
+                $cur            = App::log()->openLogCursor();
+                $cur->log_table = My::id() . 'rate';
+                $cur->log_msg   = $options[My::id()]['remain'];
+                $cur->log_dt    = (new DateTime('@' . $options[My::id()]['reset'], new DateTimeZone('UTC')))->format('Y-m-d H:i:s');
+
+                App::log()->addLog($cur);
+            } else {
+                // Set authenticate rate limit
+                $cur               = App::auth()->openUserCursor();
+                $cur->user_options = new ArrayObject($options);
+
+                App::auth()->sudo([App::users(), 'updUser'], $user, $cur);
+            }
         }
     }
 

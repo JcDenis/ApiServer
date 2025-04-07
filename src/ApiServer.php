@@ -131,6 +131,7 @@ class ApiServer
             Endpoint\UserEndpoint::ID      => Endpoint\UserEndpoint::class,
             Endpoint\EndpointsEndpoint::ID => Endpoint\EndpointsEndpoint::class,
             Endpoint\CodesEndpoint::ID     => Endpoint\CodesEndpoint::class,
+            Endpoint\BlogEndpoint::ID      => Endpoint\BlogEndpoint::class,
         ];
     }
 

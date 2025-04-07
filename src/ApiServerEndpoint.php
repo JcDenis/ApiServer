@@ -33,6 +33,13 @@ class ApiServerEndpoint
     ];
 
     /**
+     * Endpoint required registerd user.
+     *
+     * @var     bool    AUTH
+     */
+    public const AUTH = true;
+
+    /**
      * Endpoint used arguments.
      *
      * This is the list of POST parameters that endpoint could use,
@@ -155,8 +162,10 @@ class ApiServerEndpoint
             return;
         }
 
-       	// User is not authorized
-        throw new ApiServerException(109);
+        if (static::AUTH) {
+           	// User is not authorized
+            throw new ApiServerException(109);
+        }
     }
 
     /**
