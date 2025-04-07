@@ -2,11 +2,11 @@
 <modules xmlns:da="http://dotaddict.org/da/">
   <module id="ApiServer">
     <name>Dotclear public API</name>
-    <version>0.2</version>
-    <date>2025-04-05T16:00:00+00:00</date>
+    <version>0.3</version>
+    <date>2025-04-07T07:57:41+00:00</date>
     <author>Jean-Christian Paul Denis</author>
     <desc>Serv your blog through API.</desc>
-    <file>https://github.com/JcDenis/ApiServer/releases/download/v0.2/plugin-ApiServer.zip</file>
+    <file>https://github.com/JcDenis/ApiServer/releases/download/v0.3/plugin-ApiServer.zip</file>
     <da:dcmin>2.34</da:dcmin>
     <da:details>https://github.com/JcDenis/ApiServer/src/branch/master/README.md</da:details>
     <da:support>https://github.com/JcDenis/ApiServer/issues</da:support>
