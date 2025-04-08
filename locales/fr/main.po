@@ -1,15 +1,15 @@
 # Language: Français
-# Module: ApiServer - 0.2
-# Date: 2025-04-05 17:09:52
+# Module: ApiServer - 0.3.2
+# Date: 2025-04-08 08:03:38
 # Author: , contact@jcdenis.fr
 # Translated with translater 2025.03.03
 
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: ApiServer 0.2\n"
+"Project-Id-Version: ApiServer 0.3.2\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-04-05T17:09:52+00:00\n"
+"PO-Revision-Date: 2025-04-08T08:03:38+00:00\n"
 "Last-Translator: Jean-Christian Denis\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -56,13 +56,17 @@ msgstr "Echec de la soumission"
 msgid "API rate limit reach."
 msgstr "Limite de quota de l'API atteinte."
 
-#: src/BackendBehaviors.php:67
+#: src/BackendBehaviors.php:69
 msgid "API call limit per %d seconds:"
 msgstr "Limite de nombre d'appel à l'API par %d secondes :"
 
-#: src/BackendBehaviors.php:87
+#: src/BackendBehaviors.php:91
 msgid "Enable public API for this blog"
 msgstr "Activer l'API public pour ce blog"
+
+#: src/BackendBehaviors.php:97
+msgid "Reset anonymous API calls limit. (%d calls remaining for next %d seconds)"
+msgstr "Réinitialiser les appels anonymes à l'API. (%s appels restant pour les %d prochaines secondes)"
 
 #: src/MaintenanceTask/CleanCache.php:32
 msgid "Empty API cache directory"

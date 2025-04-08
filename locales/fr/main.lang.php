@@ -1,7 +1,7 @@
 <?php
 // Language: Français
-// Module: ApiServer - 0.2
-// Date: 2025-04-05 17:09:52
+// Module: ApiServer - 0.3.2
+// Date: 2025-04-08 08:03:38
 // Author: , contact@jcdenis.fr
 // Translated with Translater - 2025.03.03
 
@@ -24,6 +24,7 @@ L10n::$locales['Submission failed'] = 'Echec de la soumission';
 L10n::$locales['API rate limit reach.'] = 'Limite de quota de l\'API atteinte.';
 L10n::$locales['API call limit per %d seconds:'] = 'Limite de nombre d\'appel à l\'API par %d secondes :';
 L10n::$locales['Enable public API for this blog'] = 'Activer l\'API public pour ce blog';
+L10n::$locales['Reset anonymous API calls limit. (%d calls remaining for next %d seconds)'] = 'Réinitialiser les appels anonymes à l\'API. (%s appels restant pour les %d prochaines secondes)';
 L10n::$locales['Empty API cache directory'] = 'Vider le répertoire de cache de l\'API';
 L10n::$locales['API cache directory emptied.'] = 'Répertoire de cache de l\'API vidé';
 L10n::$locales['Failed to empty API cache directory.'] = 'Impossible de vider le répertoire de cache de l\'API';

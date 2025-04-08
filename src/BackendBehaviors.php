@@ -94,7 +94,7 @@ class BackendBehaviors
                     ->items([
                         (new Checkbox(My::id() . 'reset', false))
                             ->value(1)
-                            ->label((new Label(sprintf(__('Reset anonymous API calls limit. (%d/%d remaining)'), (int) $rs->f('log_msg'), ApiServerRate::getDefaultTimeFrame()), Label::IL_FT))),
+                            ->label((new Label(sprintf(__('Reset anonymous API calls limit. (%d calls remaining for next %d seconds)'), (int) $rs->f('log_msg'), ApiServerRate::getDefaultTimeFrame()), Label::IL_FT))),
                     ]),
             ])
             ->render();
