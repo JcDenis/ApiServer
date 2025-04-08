@@ -28,7 +28,7 @@ class BlogEndpoint extends ApiServerEndpoint
             'name'        => App::blog()->name(),
             'url'         => App::blog()->url(),
             'description' => App::blog()->desc(),
-            'update'      => ApiServerRate::formatRateTime(App::blog()->upddt()),
+            'update'      => ApiServerRate::formatTime(App::blog()->upddt()),
             'nb_posts'    => App::blog()->getPosts([], true)->f(0),
         ]);
     }

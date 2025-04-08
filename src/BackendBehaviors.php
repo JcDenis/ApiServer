@@ -41,10 +41,10 @@ class BackendBehaviors
      */
     public static function adminBeforeUserUpdate(Cursor $cur, string $user_id): void
     {
-        $limit = abs((int) $_POST[My::id() . 'rate_limit'] ?: ApiServerRate::LIMIT);
+        $limit = abs((int) $_POST[My::id() . 'rate_limit'] ?: ApiServerRate::getDefaultCallsLimit());
 
         $cur->user_options[My::id()] = [
-            'reset'  => ApiServerRate::getRateTime(),
+            'reset'  => ApiServerRate::getTime(true),
             'limit'  => $limit,
             'remain' => $limit,
         ];
@@ -65,8 +65,8 @@ class BackendBehaviors
                 (new Para())
                     ->items([
                         (new Number(My::id() . 'rate_limit', 10, 9999))
-                            ->value((string) (is_array($res) && isset($res['limit']) ? $res['limit'] : ApiServerRate::LIMIT))
-                            ->label((new Label(sprintf(__('API call limit per %d seconds:'), ApiServerRate::RESET), Label::OL_TF))),
+                            ->value((string) (is_array($res) && isset($res['limit']) ? $res['limit'] : ApiServerRate::getDefaultCallsLimit()))
+                            ->label((new Label(sprintf(__('API call limit per %d seconds:'), ApiServerRate::getDefaultTimeFrame()), Label::OL_TF))),
                     ]),
             ])
             ->render();
@@ -94,7 +94,7 @@ class BackendBehaviors
                     ->items([
                         (new Checkbox(My::id() . 'reset', false))
                             ->value(1)
-                            ->label((new Label(sprintf(__('Reset anonymous API calls limit. (%d/%d remaining)'), (int) $rs->f('log_msg'), ApiServerRate::LIMIT), Label::IL_FT))),
+                            ->label((new Label(sprintf(__('Reset anonymous API calls limit. (%d/%d remaining)'), (int) $rs->f('log_msg'), ApiServerRate::getDefaultTimeFrame()), Label::IL_FT))),
                     ]),
             ])
             ->render();

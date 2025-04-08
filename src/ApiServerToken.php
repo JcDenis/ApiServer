@@ -95,7 +95,7 @@ class ApiServerToken
      */
     public static function newFromUser(string $user): self
     {
-        return new self($user, ApiServerRate::getRateTime(null, false), ApiServerRate::getRateTime(null, true));
+        return new self($user, ApiServerRate::getTime(false), ApiServerRate::getTime(true));
     }
 
     /**

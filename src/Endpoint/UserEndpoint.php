@@ -28,7 +28,7 @@ class UserEndpoint extends ApiServerEndpoint
         $content = [
             'name'        => App::auth()->getInfo('user_cn'),
             'token'       => $this->token->encode(),
-            'token_reset' => ApiServerRate::formatRateTime($this->token->reset),
+            'token_reset' => ApiServerRate::formatTime($this->token->reset),
             'rate_limit'  => $this->rate->getLimit(),
             'rate_remain' => $this->rate->getRemain(),
             'rate_reset'  => $this->rate->getResetDate(),

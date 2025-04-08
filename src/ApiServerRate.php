@@ -19,42 +19,25 @@ use Dotclear\App;
 class ApiServerRate
 {
     /**
-     * API calls limit.
-     *
-     * rate limit per rate reset per token.
-     * Can be changed in user preferences options.
-     *
-     * @var     int     LIMIT
-     */
-    public const LIMIT = 2000;
-
-    /**
-     * API calls limit reset time (in second).
-     *
-     * @var     int     RESET
-     */
-    public const RESET = 3600;
-
-    /**
      * User current API calls limit.
      *
      * @var     int     $limit
      */
-    private int $limit  = self::LIMIT;
+    private int $limit;
 
     /**
      * User current API calls remain.
      *
      * @var     int     $remain
      */
-    private int $remain = self::LIMIT;
+    private int $remain;
 
     /**
      * User current API calls reset time.
      *
      * @var     int     $reset
      */
-    private int $reset  = 1;
+    private int $reset;
 
     /**
      * Create new API rate instance.
@@ -64,7 +47,8 @@ class ApiServerRate
      */
     public function __construct(string $user, int $cost = 0)
     {
-        $this->reset  = self::getRateTime();
+        $this->limit = $this->remain = self::getDefaultCallsLimit();
+        $this->reset = self::getTime(true);
 
         if ($user === '') {
             // Get anonymous rate limit
@@ -100,11 +84,11 @@ class ApiServerRate
             if (isset($rate['reset'])) {
                 $this->reset = abs((int) $rate['reset']);
             }
-            if ($this->remain >= $this->limit) {
+            if ($this->remain > $this->limit) {
                 $this->remain = $this->limit;
             }
-            if ($this->reset < self::getRateTime(null, false)) {
-                $this->reset  = self::getRateTime();
+            if ($this->reset < self::getTime(false)) {
+                $this->reset  = self::getTime(true);
                 $this->remain = $this->limit;
             }
         }
@@ -121,11 +105,6 @@ class ApiServerRate
             if ($this->remain < 0) {
                 $this->remain = 0;
             }
-            $options[My::id()] = [
-                'limit'  => $this->limit,
-                'remain' => $this->remain,
-                'reset'  => $this->reset,
-            ];
 
             if ($user === '') {
                 // Clean old logs
@@ -136,17 +115,42 @@ class ApiServerRate
                 // Set anonymous rate limit
                 $cur            = App::log()->openLogCursor();
                 $cur->log_table = My::id() . 'rate';
-                $cur->log_msg   = $options[My::id()]['remain'];
-                $cur->log_dt    = (new DateTime('@' . $options[My::id()]['reset'], new DateTimeZone('UTC')))->format('Y-m-d H:i:s');
+                $cur->log_msg   = $this->remain;
+                $cur->log_dt    = self::formatTime($this->reset, 'Y-m-d H:i:s');
 
                 App::log()->addLog($cur);
             } else {
+                $options[My::id()] = [
+                    'limit'  => $this->limit,
+                    'remain' => $this->remain,
+                    'reset'  => $this->reset,
+                ];
+
                 // Set authenticate rate limit
                 $cur               = App::auth()->openUserCursor();
                 $cur->user_options = new ArrayObject($options);
 
                 App::auth()->sudo([App::users(), 'updUser'], $user, $cur);
             }
+        }
+    }
+
+    /**
+     * Send API rate limit HTTP headers.
+     *
+     * API rate headers follows something like :
+     * https://developer.atlassian.com/cloud/jira/platform/rate-limiting/#rate-limit-related-headers
+     */
+    public function sendHeaders(): void
+    {
+        if ($this->getLimit() > 1) {
+            header('X-RateLimit-NearLimit: ' . (($this->getRemain() * 100 / $this->getLimit()) < 20 ? '1' : '0'));
+            header('X-RateLimit-Limit: ' . $this->getLimit());
+            header('X-RateLimit-Remaining: ' . $this->getRemain());
+            header('X-RateLimit-Reset: ' . $this->formatTime($this->getReset()));
+        }
+        if ($this->getRemain() < 1) {
+            header('Retry-After: ' . ($this->getReset() - $this->getTime(false)));
         }
     }
 
@@ -167,7 +171,7 @@ class ApiServerRate
     }
 
     /**
-     * Get raet limit reset time.
+     * Get rate limit reset time.
      */
     public function getReset(): int
     {
@@ -175,57 +179,59 @@ class ApiServerRate
     }
 
     /**
-     * Get raet limit reset ISO8601 date.
+     * Get rate limit reset ISO8601 date.
      */
     public function getResetDate(): string
     {
-        return self::formatRateTime($this->getReset());
-    }
-
-    /**
-     * Send API rate limit HTTP headers.
-     *
-     * API rate headers follows something like :
-     * https://developer.atlassian.com/cloud/jira/platform/rate-limiting/#rate-limit-related-headers
-     */
-    public function sendHeaders(): void
-    {
-        if ($this->getLimit() > 1) {
-            header('X-RateLimit-NearLimit: ' . (($this->getRemain() * 100 / $this->getLimit()) < 20 ? '1' : '0'));
-            header('X-RateLimit-Limit: ' . $this->getLimit());
-            header('X-RateLimit-Remaining: ' . $this->getRemain());
-            header('X-RateLimit-Reset: ' . $this->formatRateTime($this->getReset()));
-        }
-        if ($this->getRemain() < 1) {
-            header('Retry-After: ' . ($this->getReset() - $this->getRateTime(null, false)));
-        }
+        return self::formatTime($this->getReset());
     }
 
     /**
      * Get an UTC TS time.
      *
-     * @param   null|int    $time   The time to parse
-     * @param   bool        $reset  Add reset time
+     * @param   bool    $reset  Add reset time
      */
-    public static function getRateTime(?int $time = null, bool $reset = true): int
+    public static function getTime(bool $reset = true): int
     {
-        $date = new DateTime('@' . ($time ?? time()), new DateTimeZone('UTC'));
+        $date = new DateTime('now', new DateTimeZone('UTC'));
         if ($reset) {
-            $date->modify(self::RESET . 'sec');
+            $date->modify(self::getDefaultTimeFrame() . 'sec');
         }
 
         return (int) $date->format('U');
     }
 
     /**
-     * Get an UTC ISO8601 time.
+     * Get a formated UTC date from time (default to ISO8601).
      *
-     * @param   int     $time   The time to parse
+     * $format MUST be compatible with https://www.php.net/manual/en/datetime.format.php
+     *
+     * @param   int     $time       The time to parse
+     * @param   string  $format     The returned format
      */
-    public static function formatRateTime(int $time): string
+    public static function formatTime(int $time, string $format = 'c'): string
     {
-        $date = new DateTime('@' . $time, new DateTimeZone('UTC'));
+        return (new DateTime('@' . $time, new DateTimeZone('UTC')))->format($format);
+    }
 
-        return $date->format('c');
+    /**
+     * Get default API calls limit.
+     *
+     * Constant can be defined in Dotclear's config file.
+     * The API calls limit can be set per user (in system => user)
+     */
+    public static function getDefaultCallsLimit(): int
+    {
+        return (int) (defined('API_SERVER_DEFAULT_CALLS_LIMIT') ? API_SERVER_DEFAULT_CALLS_LIMIT : 2000);
+    }
+
+    /**
+     * Get default API calls limit time frame in seconds.
+     *
+     * Constant can be defined in Dotclear's config file.
+     */
+    public static function getDefaultTimeFrame(): int
+    {
+        return (int) (defined('APISERVER_DEFAULT_TIME_FRAME') ? APISERVER_DEFAULT_TIME_FRAME : 3600);
     }
 }
