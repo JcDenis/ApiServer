@@ -30,12 +30,10 @@ class ApiServerCache
      *
      * @param   ApiServer   $api                The API server instance
      * @param   bool        $use_cache          Does Api use cache system
-     * @param   int         $cache_lifetime     The Api cache lifetime (in seconds) 
      */
     public function __construct(
         private readonly ApiServer $api,
         private bool $use_cache = true,
-        private readonly int $cache_lifetime = 600 // 10 minutes cache
     ) {
         Http::$cache_max_age = $this->getLifetime();
     }
@@ -52,15 +50,18 @@ class ApiServerCache
 		}
         $path = $this->getRoot();
 
-		return $this->use_cache && $path !== '' && is_dir($path) && is_writable($path);
+		return $this->use_cache && $this->getLifetime() > 0 && $path !== '' && is_dir($path) && is_writable($path);
     }
 
     /**
      * Get cache lifetime.
+     *
+     * Constant can be defined in Dotclear's config file.
+     * Set constant to 0 to always disable API cache system.
      */
-    public function getLifetime(): int
+    public static function getLifetime(): int
     {
-        return abs($this->cache_lifetime);
+        return (int) (defined('API_SERVER_DEFAULT_CACHE_LIFETIME') ? API_SERVER_DEFAULT_CACHE_LIFETIME : 600);
     }
 
     /**
