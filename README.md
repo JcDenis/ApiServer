@@ -22,9 +22,11 @@ _ApiServer_ is a plugin for the open-source web publishing software called [Dotc
 * First install _ApiServer_, manualy from a zip package or from Dotaddict repository. (See Dotclear's documentation to know how do this)
 * Active public API in Blog preferences
 * Set per user API rate limit in User preferences
+* Default time frame and calls limit can be set by constants in Dotclear's config file.
 
-* This plugin does not serv usefull API endpoint by itself, you must use other linked plugins for that.
-* Plugin FrontendSession can be used to allow people registration on your blog.
+## NOTE
+
+This plugin does not serv usefull API endpoint by itself, you must use other linked plugins for that.
 
 ## LINKS
 
