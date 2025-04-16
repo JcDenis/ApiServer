@@ -35,7 +35,7 @@ class ApiServerCache
         private readonly ApiServer $api,
         private bool $use_cache = true,
     ) {
-        Http::$cache_max_age = $this->getLifetime();
+        Http::$cache_max_age = static::getLifetime();
     }
 
     /**
@@ -45,12 +45,12 @@ class ApiServerCache
      */
     public function useCache(?bool $enable = null): bool
     {
-        if(is_bool($enable)) {
-			$this->use_cache = $enable;
-		}
-        $path = $this->getRoot();
+        if (is_bool($enable)) {
+            $this->use_cache = $enable;
+        }
+        $path = static::getRoot();
 
-		return $this->use_cache && $this->getLifetime() > 0 && $path !== '' && is_dir($path) && is_writable($path);
+        return $this->use_cache && static::getLifetime() > 0 && $path !== '' && is_dir($path) && is_writable($path);
     }
 
     /**
@@ -92,7 +92,7 @@ class ApiServerCache
         $id = $this->getId();
 
         return implode(DIRECTORY_SEPARATOR, [
-            $this->getRoot(),
+            static::getRoot(),
             My::id(),
             self::FOLDER,
             substr($id, 0, 2),
@@ -121,7 +121,7 @@ class ApiServerCache
         $file = $this->getFile();
         clearstatcache();
 
-        return !$this->useCache() || !file_exists($file) || ((int) filemtime($file) + $this->getLifetime()) < time();
+        return !$this->useCache() || !file_exists($file) || ((int) filemtime($file) + static::getLifetime()) < time();
     }
 
     /**
@@ -159,7 +159,7 @@ class ApiServerCache
      */
     public static function clearCache(): void
     {
-    	if (is_dir(self::getPath())) {
+        if (is_dir(self::getPath())) {
             Files::deltree(self::getPath());
         }
     }

@@ -72,22 +72,16 @@ class ApiServerEndpoint
 
     /**
      * Authenticated user.
-     *
-     * @var    ApiServerToken   $token 
      */
     protected ApiServerToken $token;
 
     /**
      * Rate limit handler.
-     *
-     * @var     ApiServerRate   $rate
      */
     protected ApiServerRate $rate;
 
     /**
      * Cache handler.
-     *
-     * @var     ApiServerCache  $cache
      */
     protected ApiServerCache $cache;
 
@@ -99,8 +93,8 @@ class ApiServerEndpoint
     public function __construct(
         protected ApiServer $api
     ) {
-    	$this->checkEndpoint();
-    	$this->checkUser();
+        $this->checkEndpoint();
+        $this->checkUser();
         $this->checkRate();
         $this->checkCache();
         $this->callEndpoint();
@@ -113,7 +107,7 @@ class ApiServerEndpoint
      */
     protected function checkEndpoint(): void
     {
-    	//
+        //
     }
 
     /**
@@ -152,8 +146,8 @@ class ApiServerEndpoint
                 return;
             }
             // Check user perms
-        } elseif (App::auth()->checkUser($username, $password, null, false)   === true
-         && App::auth()->check(My::id(), App::blog()->id()) === true
+        } elseif (App::auth()->checkUser($username, $password, null, false) === true
+         && App::auth()->check(My::id(), App::blog()->id())                 === true
          && !App::status()->user()->isRestricted((int) App::auth()->getInfo('user_status'))
          && !App::auth()->mustChangePassword()
         ) {
@@ -163,7 +157,7 @@ class ApiServerEndpoint
         }
 
         if (static::AUTH) {
-           	// User is not authorized
+            // User is not authorized
             throw new ApiServerException(109);
         }
     }
@@ -182,7 +176,7 @@ class ApiServerEndpoint
     protected function checkCache(): void
     {
         $this->cache = new ApiServerCache($this->api, static::CACHE);
-        $cache = $this->cache->readCache();
+        $cache       = $this->cache->readCache();
         if ($cache->code !== 110) {
             $this->sendContent($cache);
         }
@@ -204,7 +198,7 @@ class ApiServerEndpoint
      * Quick send content.
      *
      * @see     sendContent
-     * 
+     *
      * @param   array<string, mixed>    $content    The response content array
      */
     protected function setContent(array $content): void

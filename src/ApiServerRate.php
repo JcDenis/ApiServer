@@ -20,22 +20,16 @@ class ApiServerRate
 {
     /**
      * User current API calls limit.
-     *
-     * @var     int     $limit
      */
     private int $limit;
 
     /**
      * User current API calls remain.
-     *
-     * @var     int     $remain
      */
     private int $remain;
 
     /**
      * User current API calls reset time.
-     *
-     * @var     int     $reset
      */
     private int $reset;
 
@@ -98,6 +92,7 @@ class ApiServerRate
             // API call rate limit is reached
             if ($this->remain < 1) {
                 $this->sendHeaders();
+
                 throw new ApiServerException(429);
             }
 
@@ -147,10 +142,10 @@ class ApiServerRate
             header('X-RateLimit-NearLimit: ' . (($this->getRemain() * 100 / $this->getLimit()) < 20 ? '1' : '0'));
             header('X-RateLimit-Limit: ' . $this->getLimit());
             header('X-RateLimit-Remaining: ' . $this->getRemain());
-            header('X-RateLimit-Reset: ' . $this->formatTime($this->getReset()));
+            header('X-RateLimit-Reset: ' . static::formatTime($this->getReset()));
         }
         if ($this->getRemain() < 1) {
-            header('Retry-After: ' . ($this->getReset() - $this->getTime(false)));
+            header('Retry-After: ' . ($this->getReset() - static::getTime(false)));
         }
     }
 

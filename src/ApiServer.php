@@ -47,15 +47,11 @@ class ApiServer
 
     /**
      * The requested endpoint.
-     *
-     * @var     string  $endpoint
      */
     private string $endpoint = '';
 
     /**
      * The requested API version.
-     *
-     * @var     string  $version
      */
     private string $version = '';
 
@@ -64,8 +60,8 @@ class ApiServer
      *
      * @param   string  $args   The URI arguments
      */
-	public function __construct(string $args)
-	{
+    public function __construct(string $args)
+    {
         try {
             // Cleanup URI arguments
             if (str_starts_with($args, '/')) {
@@ -74,12 +70,12 @@ class ApiServer
             if (str_ends_with($args, '/')) {
                 $args = substr($args, 0, -1);
             }
-            $args           = explode('/', $args);
+            $args = explode('/', $args);
 
             // Set properties
-            $this->endpoint = (string) array_shift($args);
+            $this->endpoint = array_shift($args) ?: '';
             $this->get      = $args;
-            $this->version  = self::getVersionFromHeaders();
+            $this->version  = $this->getVersionFromHeaders();
 
             // Check API activation
             if (!My::settings()->get('active')) {
@@ -119,7 +115,7 @@ class ApiServer
         } catch (Throwable $e) {
             throw new ApiServerException((int) $e->getCode(), $e->getMessage());
         }
-	}
+    }
 
     /**
      * Add default endpoints.
@@ -142,6 +138,9 @@ class ApiServer
      */
     private function addEndpoints(): void
     {
+        /**
+         * @var        ArrayObject<int|string, string>
+         */
         $endpoints = new ArrayObject();
 
         # --BEHAVIOR-- ApiServerAddEndpoint -- ApiServer
@@ -179,8 +178,6 @@ class ApiServer
      * Get a API called URI arg.
      *
      * @param   int     $arg    The arg number
-     *
-     * @return  string
      */
     public function getArg(int $arg): string
     {
@@ -241,7 +238,7 @@ class ApiServer
      *
      * If no version are requested, use current one.
      */
-    private static function getVersionFromHeaders(): string
+    private function getVersionFromHeaders(): string
     {
         if (function_exists('getallheaders')) {
             $headers = getallheaders();
@@ -249,7 +246,7 @@ class ApiServer
             $headers = [];
             foreach ($_SERVER as $name => $value) {
                 $name = (string) $name;
-                if (substr($name, 0, 5) == 'HTTP_' && is_string($value)) {
+                if (str_starts_with($name, 'HTTP_') && is_string($value)) {
                     $headers[str_replace(' ', '-', str_replace('_', ' ', substr($name, 5)))] = $value;
                 }
             }
