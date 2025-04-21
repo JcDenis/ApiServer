@@ -38,6 +38,7 @@ This plugin does not serv usefull API endpoint by itself, you must use other lin
 ## CONTRIBUTORS
 
 * Jean-Christian Denis (author)
+* Franck Paul
 
 You are welcome to contribute to this code.
 
