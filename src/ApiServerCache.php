@@ -80,6 +80,7 @@ class ApiServerCache
         return implode(DIRECTORY_SEPARATOR, [
             self::getRoot(),
             My::id(),
+            App::blog()->id(),
             self::FOLDER,
         ]);
     }
@@ -94,6 +95,7 @@ class ApiServerCache
         return implode(DIRECTORY_SEPARATOR, [
             static::getRoot(),
             My::id(),
+            App::blog()->id(),
             self::FOLDER,
             substr($id, 0, 2),
             substr($id, 2, 2),
