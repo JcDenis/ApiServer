@@ -52,7 +52,7 @@ class ApiServerResponse
         $res = json_decode((string) ($content ?: json_encode([])), true);
 
         return new self(
-            code:    $res['code'] ?? 110,
+            code:    $res['code']    ?? 110,
             message: $res['message'] ?? '',
             content: $res['content'] ?? [],
             cache:   true,

@@ -22,18 +22,18 @@ class ApiServerException extends Exception
      * @param   int     $code       The status code
      * @param   string  $message    The custom status message
      */
-	public function __construct(int $code, string $message = '')
+    public function __construct(int $code, string $message = '')
     {
         $head  = null;
-    	$codes = self::codes();
-    	if (!isset($codes[$code])) {
-    		$code = 100;
-        	$head = 400;
-    	}
-    	if ($message === '') {
-    		$message = $codes[$code] ?? '';
-        	$head   = 200;
-    	}
+        $codes = self::codes();
+        if (!isset($codes[$code])) {
+            $code = 100;
+            $head = 400;
+        }
+        if ($message === '') {
+            $message = $codes[$code] ?? '';
+            $head    = 200;
+        }
 
         Http::head($head ?? $code);
         ApiServer::sendHeaders();

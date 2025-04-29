@@ -15,7 +15,6 @@ use Dotclear\Helper\Html\Form\Legend;
 use Dotclear\Helper\Html\Form\Number;
 use Dotclear\Helper\Html\Form\None;
 use Dotclear\Helper\Html\Form\Para;
-use Dotclear\Helper\Html\Form\Text;
 use Dotclear\Interface\Core\BlogSettingsInterface;
 use Dotclear\Plugin\maintenance\Maintenance;
 

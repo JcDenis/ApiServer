@@ -4,12 +4,8 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\ApiServer\MaintenanceTask;
 
-use Dotclear\App;
-use Dotclear\Helper\File\Files;
-use Dotclear\Plugin\ApiServer\My;
 use Dotclear\Plugin\ApiServer\ApiServerCache;
 use Dotclear\Plugin\maintenance\MaintenanceTask;
-use Exception;
 
 /**
  * @brief       ApiServer module maintenance task to clean cache

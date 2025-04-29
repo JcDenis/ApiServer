@@ -13,14 +13,14 @@ use Dotclear\Plugin\ApiServer\ApiServerRate;
  * @ingroup     ApiServer
  *
  * For now, this endpoint experiment anonymous query.
- * 
+ *
  * @author      Jean-Chirstian Paul Denis
  * @copyright   AGPL-3.0
  */
 class BlogEndpoint extends ApiServerEndpoint
 {
-    public const ID     = 'blog';
-    public const AUTH   = false;
+    public const ID   = 'blog';
+    public const AUTH = false;
 
     protected function callEndpoint(): void
     {
