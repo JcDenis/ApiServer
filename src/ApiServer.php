@@ -143,7 +143,7 @@ class ApiServer
          */
         $endpoints = new ArrayObject();
 
-        # --BEHAVIOR-- ApiServerAddEndpoint -- ApiServer
+        # --BEHAVIOR-- ApiServerAddEndpoint -- ArrayObject
         App::behavior()->callBehavior(My::id() . 'AddEndpoint', $endpoints);
 
         foreach ($endpoints as $endpoint) {
