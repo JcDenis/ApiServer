@@ -6,10 +6,7 @@ namespace Dotclear\Plugin\ApiServer\Endpoint;
 
 use ArrayObject;
 use Dotclear\App;
-use Dotclear\Plugin\ApiServer\ApiServerEndpoint;
-use Dotclear\Plugin\ApiServer\ApiServerRate;
-use Dotclear\Plugin\ApiServer\ApiServerResponse;
-use Dotclear\Plugin\ApiServer\My;
+use Dotclear\Plugin\ApiServer\{ ApiServerEndpoint, ApiServerLifetime, ApiServerResponse, My };
 
 /**
  * @brief       ApiServer user API endpoint.
@@ -28,7 +25,7 @@ class UserEndpoint extends ApiServerEndpoint
         $content = [
             'name'        => App::auth()->getInfo('user_cn'),
             'token'       => $this->token->encode(),
-            'token_reset' => ApiServerRate::formatTime($this->token->reset),
+            'token_reset' => ApiServerLifetime::formatTime($this->token->reset),
             'rate_limit'  => $this->rate->getLimit(),
             'rate_remain' => $this->rate->getRemain(),
             'rate_reset'  => $this->rate->getResetDate(),

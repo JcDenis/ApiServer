@@ -16,7 +16,7 @@ use Dotclear\Helper\Network\Http;
  * @author      Jean-Chirstian Paul Denis
  * @copyright   AGPL-3.0
  */
-class ApiServerCache
+class ApiServerCache extends ApiServerLifetime
 {
     /**
      * Cache sub folder.
@@ -35,7 +35,7 @@ class ApiServerCache
         private readonly ApiServer $api,
         private bool $use_cache = true,
     ) {
-        Http::$cache_max_age = static::getLifetime();
+        Http::$cache_max_age = static::getLifeTime();
     }
 
     /**
@@ -50,18 +50,23 @@ class ApiServerCache
         }
         $path = static::getRoot();
 
-        return $this->use_cache && static::getLifetime() > 0 && $path !== '' && is_dir($path) && is_writable($path);
+        return $this->use_cache && static::getLifeTime() > 0 && $path !== '' && is_dir($path) && is_writable($path);
     }
 
     /**
-     * Get cache lifetime.
-     *
-     * Constant can be defined in Dotclear's config file.
-     * Set constant to 0 to always disable API cache system.
+     * Get cache lifetime in seconds.
      */
-    public static function getLifetime(): int
+    public static function getLifeTime(): int
     {
-        return (int) (defined('API_SERVER_DEFAULT_CACHE_LIFETIME') ? API_SERVER_DEFAULT_CACHE_LIFETIME : 600);
+        if (defined('API_SERVER_DEFAULT_CACHE_LIFETIME')) {
+            $lifetime = (int) API_SERVER_DEFAULT_CACHE_LIFETIME;
+        } elseif (is_numeric(My::settings()->get('cache_lifetime'))) {
+            $lifetime = (int) My::settings()->get('cache_lifetime');
+        } else {
+            $lifetime = 600;
+        }
+
+        return $lifetime;
     }
 
     /**
@@ -123,7 +128,7 @@ class ApiServerCache
         $file = $this->getFile();
         clearstatcache();
 
-        return !$this->useCache() || !file_exists($file) || ((int) filemtime($file) + static::getLifetime()) < time();
+        return !$this->useCache() || !file_exists($file) || ((int) filemtime($file) + static::getLifeTime()) < time();
     }
 
     /**

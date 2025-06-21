@@ -43,7 +43,7 @@ class BackendBehaviors
         $limit = abs((int) $_POST[My::id() . 'rate_limit'] ?: ApiServerRate::getDefaultCallsLimit());
 
         $cur->user_options[My::id()] = [
-            'reset'  => ApiServerRate::getTime(true),
+            'reset'  => ApiServerRate::getEndTime(),
             'limit'  => $limit,
             'remain' => $limit,
         ];
@@ -65,7 +65,7 @@ class BackendBehaviors
                     ->items([
                         (new Number(My::id() . 'rate_limit', 10, 9999))
                             ->value((string) (is_array($res) && isset($res['limit']) ? $res['limit'] : ApiServerRate::getDefaultCallsLimit()))
-                            ->label((new Label(sprintf(__('API call limit per %d seconds:'), ApiServerRate::getDefaultTimeFrame()), Label::OL_TF))),
+                            ->label((new Label(sprintf(__('API call limit per %d seconds:'), ApiServerRate::getLifeTime()), Label::OL_TF))),
                     ]),
             ])
             ->render();
@@ -80,22 +80,54 @@ class BackendBehaviors
     {
         $rs = App::log()->getLogs(['log_table' => My::id() . 'rate', 'limit' => 1]);
 
+        $fields = [
+            (new Para())
+                ->items([
+                    (new Checkbox(My::id() . 'active', $blog_settings->get(My::id())->get('active')))
+                        ->value(1)
+                        ->label((new Label(__('Enable public API for this blog'), Label::IL_FT))),
+                ]),
+        ];
+
+        if (!$rs->isEmpty()) {
+            $fields[] = (new Para())
+                ->items([
+                    (new Checkbox(My::id() . 'reset', false))
+                        ->value(1)
+                        ->label((new Label(sprintf(__('Reset anonymous API calls limit. (%d calls remaining for next %d seconds)'), (int) $rs->f('log_msg'), ApiServerRate::getLifeTime()), Label::IL_FT))),
+                ]);
+        }
+
+        if (!defined('APISERVER_DEFAULT_TOKEN_LIFETIME')) {
+            $fields[] = (new Para())
+                ->items([
+                    (new Number(My::id() . 'token_lifetime', 60, 2592000)) // from 1 minute to 30 days
+                        ->value((string) ((int) $blog_settings->get(My::id())->get('token_lifetime') ?: 3600))
+                        ->label((new Label(__('User token lifetime in seconds:'), Label::OUTSIDE_TEXT_BEFORE))),
+                ]);
+        }
+
+        if (!defined('APISERVER_DEFAULT_RATE_LIFETIME')) {
+            $fields[] = (new Para())
+                ->items([
+                    (new Number(My::id() . 'rate_lifetime', 60, 86400)) // from 1 minute to 1 day
+                        ->value((string) ((int) $blog_settings->get(My::id())->get('rate_lifetime') ?: 3600))
+                        ->label((new Label(__('API calls rate frame in seconds:'), Label::OUTSIDE_TEXT_BEFORE))),
+                ]);
+        }
+
+        if (!defined('APISERVER_DEFAULT_CACHE_LIFETIME')) {
+            $fields[] = (new Para())
+                ->items([
+                    (new Number(My::id() . 'cache_lifetime', 60, 86400)) // from 1 minute to 1 day
+                        ->value((string) ((int) $blog_settings->get(My::id())->get('cache_lifetime') ?: 3600))
+                        ->label((new Label(__('API server cache lifetime in seconds:'), Label::OUTSIDE_TEXT_BEFORE))),
+                ]);
+        }
+
         echo (new Fieldset(My::id() . '_params'))
             ->legend(new Legend(My::name()))
-            ->fields([
-                (new Para())
-                    ->items([
-                        (new Checkbox(My::id() . 'active', $blog_settings->get(My::id())->get('active')))
-                            ->value(1)
-                            ->label((new Label(__('Enable public API for this blog'), Label::IL_FT))),
-                    ]),
-                $rs->isEmpty() ? new None() : (new Para())
-                    ->items([
-                        (new Checkbox(My::id() . 'reset', false))
-                            ->value(1)
-                            ->label((new Label(sprintf(__('Reset anonymous API calls limit. (%d calls remaining for next %d seconds)'), (int) $rs->f('log_msg'), ApiServerRate::getDefaultTimeFrame()), Label::IL_FT))),
-                    ]),
-            ])
+            ->fields($fields)
             ->render();
     }
 
@@ -112,6 +144,16 @@ class BackendBehaviors
                 App::log()->delLog((int) $rs->f('log_id'));
             }
         }
+        if (!defined('APISERVER_DEFAULT_TOKEN_LIFETIME') && !empty($_POST[My::id() . 'token_lifetime'])) {
+            $blog_settings->get(My::id())->put('token_lifetime', (int) $_POST[My::id() . 'token_lifetime'], 'integer');
+        }
+        if (!defined('APISERVER_DEFAULT_RATE_LIFETIME') && !empty($_POST[My::id() . 'rate_lifetime'])) {
+            $blog_settings->get(My::id())->put('rate_lifetime', (int) $_POST[My::id() . 'rate_lifetime'], 'integer');
+        }
+        if (!defined('APISERVER_DEFAULT_CACHE_LIFETIME') && !empty($_POST[My::id() . 'cache_lifetime'])) {
+            $blog_settings->get(My::id())->put('cache_lifetime', (int) $_POST[My::id() . 'cache_lifetime'], 'integer');
+        }
+
         $blog_settings->get(My::id())->put('active', !empty($_POST[My::id() . 'active']), 'boolean');
     }
 }

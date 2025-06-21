@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\ApiServer\Endpoint;
 
 use Dotclear\App;
-use Dotclear\Plugin\ApiServer\ApiServerEndpoint;
-use Dotclear\Plugin\ApiServer\ApiServerRate;
+use Dotclear\Plugin\ApiServer\{ ApiServerEndpoint, ApiServerLifetime };
 
 /**
  * @brief       ApiServer blog API endpoint.
@@ -28,7 +27,7 @@ class BlogEndpoint extends ApiServerEndpoint
             'name'        => App::blog()->name(),
             'url'         => App::blog()->url(),
             'description' => App::blog()->desc(),
-            'update'      => ApiServerRate::formatTime(App::blog()->upddt()),
+            'update'      => ApiServerLifetime::formatTime(App::blog()->upddt()),
             'nb_posts'    => App::blog()->getPosts([], true)->f(0),
         ]);
     }

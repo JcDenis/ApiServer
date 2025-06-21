@@ -16,7 +16,7 @@ use Throwable;
  * @author      Jean-Chirstian Paul Denis
  * @copyright   AGPL-3.0
  */
-class ApiServerToken
+class ApiServerToken extends ApiServerLifetime
 {
     /**
      * Token version.
@@ -36,8 +36,8 @@ class ApiServerToken
      * Create user token instance.
      *
      * @param   string  $user   The token user ID
-     * @param   int     $time   The token time
-     * @param   int     $reset  The token reset time
+     * @param   int     $time   The token timestamp
+     * @param   int     $reset  The token reset timestamp
      */
     public function __construct(
         public readonly string $user,
@@ -95,7 +95,7 @@ class ApiServerToken
      */
     public static function newFromUser(string $user): self
     {
-        return new self($user, ApiServerRate::getTime(false), ApiServerRate::getTime(true));
+        return new self($user, self::getStartTime(), self::getEndTime());
     }
 
     /**
@@ -106,5 +106,21 @@ class ApiServerToken
         $headers = getallheaders();
 
         return self::decode(isset($headers['Authorization']) ? str_replace('Bearer ', '', (string) $headers['Authorization']) : '');
+    }
+
+    /**
+     * Get user token lifetime in seconds.
+     */
+    public static function getLifeTime(): int
+    {
+        if (defined('APISERVER_DEFAULT_TOKEN_LIFETIME')) {
+            $lifetime = (int) APISERVER_DEFAULT_TOKEN_LIFETIME;
+        } elseif (is_numeric(My::settings()->get('token_lifetime'))) {
+            $lifetime = (int) My::settings()->get('token_lifetime');
+        } else {
+            $lifetime = 3600;
+        }
+
+        return $lifetime;
     }
 }
