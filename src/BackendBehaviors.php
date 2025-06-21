@@ -87,6 +87,12 @@ class BackendBehaviors
                         ->value(1)
                         ->label((new Label(__('Enable public API for this blog'), Label::IL_FT))),
                 ]),
+            (new Para())
+                ->items([
+                    (new Checkbox(My::id() . 'signup_perm', (bool) $blog_settings->get(My::id())->get('signup_perm')))
+                        ->value(1)
+                        ->label(new Label(__('Add user permission to use API on sign up'), Label::IL_FT)),
+                ]),
         ];
 
         if (!$rs->isEmpty()) {
@@ -155,5 +161,6 @@ class BackendBehaviors
         }
 
         $blog_settings->get(My::id())->put('active', !empty($_POST[My::id() . 'active']), 'boolean');
+        $blog_settings->get(My::id())->put('signup_perm', !empty($_POST[My::id() . 'signup_perm']), 'boolean');
     }
 }
