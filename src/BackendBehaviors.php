@@ -15,6 +15,7 @@ use Dotclear\Helper\Html\Form\Legend;
 use Dotclear\Helper\Html\Form\Number;
 use Dotclear\Helper\Html\Form\None;
 use Dotclear\Helper\Html\Form\Para;
+use Dotclear\Helper\Html\Form\Select;
 use Dotclear\Interface\Core\BlogSettingsInterface;
 use Dotclear\Plugin\maintenance\Maintenance;
 
@@ -105,29 +106,58 @@ class BackendBehaviors
         }
 
         if (!defined('APISERVER_DEFAULT_TOKEN_LIFETIME')) {
+            $values = [
+                __('One minute') => 60,
+                __('One hour')   => 3600,
+                __('One day')    => 86400,
+                __('One week')   => 604800,
+                __('One month')  => 2592000,
+            ];
+
             $fields[] = (new Para())
                 ->items([
-                    (new Number(My::id() . 'token_lifetime', 60, 2592000)) // from 1 minute to 30 days
-                        ->value((string) ((int) $blog_settings->get(My::id())->get('token_lifetime') ?: 3600))
-                        ->label((new Label(__('User token lifetime in seconds:'), Label::OUTSIDE_TEXT_BEFORE))),
+                    (new Select(My::id() . 'token_lifetime'))
+                        ->items($values)
+                        ->default((string) ((int) $blog_settings->get(My::id())->get('token_lifetime') ?: 3600))
+                        ->label((new Label(__('User token lifetime:'), Label::OUTSIDE_TEXT_BEFORE))),
                 ]);
         }
 
         if (!defined('APISERVER_DEFAULT_RATE_LIFETIME')) {
+            $values = [
+                __('One minute')      => 60,
+                __('Fifteen minutes') => 900,
+                __('Half an hour')    => 1800,
+                __('One hour')        => 3600,
+                __('Two hours')       => 7200,
+                __('One day')         => 86400,
+            ];
+
             $fields[] = (new Para())
                 ->items([
-                    (new Number(My::id() . 'rate_lifetime', 60, 86400)) // from 1 minute to 1 day
-                        ->value((string) ((int) $blog_settings->get(My::id())->get('rate_lifetime') ?: 3600))
-                        ->label((new Label(__('API calls rate frame in seconds:'), Label::OUTSIDE_TEXT_BEFORE))),
+                    (new Select(My::id() . 'rate_lifetime'))
+                        ->items($values)
+                        ->default((string) ((int) $blog_settings->get(My::id())->get('rate_lifetime') ?: 3600))
+                        ->label((new Label(__('API calls rate limit period:'), Label::OUTSIDE_TEXT_BEFORE))),
                 ]);
         }
 
         if (!defined('APISERVER_DEFAULT_CACHE_LIFETIME')) {
+            $values = [
+                __('One minute')      => 60,
+                __('Fifteen minutes') => 900,
+                __('Half an hour')    => 1800,
+                __('One hour')        => 3600,
+                __('Two hours')       => 7200,
+                __('One day')         => 86400,
+            ];
+
             $fields[] = (new Para())
                 ->items([
-                    (new Number(My::id() . 'cache_lifetime', 60, 86400)) // from 1 minute to 1 day
-                        ->value((string) ((int) $blog_settings->get(My::id())->get('cache_lifetime') ?: 3600))
-                        ->label((new Label(__('API server cache lifetime in seconds:'), Label::OUTSIDE_TEXT_BEFORE))),
+                    (new Select(My::id() . 'cache_lifetime'))
+                        ->items($values)
+                        ->default((string) ((int) $blog_settings->get(My::id())->get('cache_lifetime') ?: 3600))
+                        ->label((new Label(__('API server cache lifetime:'), Label::OUTSIDE_TEXT_BEFORE))),
                 ]);
         }
 
