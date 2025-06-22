@@ -1,3 +1,8 @@
+ApiServer 0.5 - 2025.06.22
+===========================================================
+* Add option to set user permission on registration
+* Use custom timestamp for cache, token, rate timers
+
 ApiServer 0.4 - 2025.04.21
 ===========================================================
 * Require PHP 8.3
