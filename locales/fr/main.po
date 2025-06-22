@@ -1,15 +1,15 @@
 # Language: Français
-# Module: ApiServer - 0.3.2
-# Date: 2025-04-08 08:03:38
+# Module: ApiServer - 0.4
+# Date: 2025-06-22 09:13:12
 # Author: , contact@jcdenis.fr
 # Translated with translater 2025.03.03
 
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: ApiServer 0.3.2\n"
+"Project-Id-Version: ApiServer 0.4\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-04-08T08:03:38+00:00\n"
+"PO-Revision-Date: 2025-06-22T09:13:12+00:00\n"
 "Last-Translator: Jean-Christian Denis\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -52,6 +52,10 @@ msgstr "Les contributions sont temporairement fermées"
 msgid "Submission failed"
 msgstr "Echec de la soumission"
 
+#: src/ApiServerException.php:61
+msgid "Unauthorized"
+msgstr "Non autorisé"
+
 #: src/ApiServerException.php:63
 msgid "API rate limit reach."
 msgstr "Limite de quota de l'API atteinte."
@@ -60,23 +64,71 @@ msgstr "Limite de quota de l'API atteinte."
 msgid "API call limit per %d seconds:"
 msgstr "Limite de nombre d'appel à l'API par %d secondes :"
 
-#: src/BackendBehaviors.php:91
+#: src/BackendBehaviors.php:89
 msgid "Enable public API for this blog"
 msgstr "Activer l'API public pour ce blog"
 
-#: src/BackendBehaviors.php:97
+#: src/BackendBehaviors.php:95
+msgid "Add user permission to use API on sign up"
+msgstr "Ajouter les permissions utilisateur lors de l'inscription"
+
+#: src/BackendBehaviors.php:104
 msgid "Reset anonymous API calls limit. (%d calls remaining for next %d seconds)"
 msgstr "Réinitialiser les appels anonymes à l'API. (%s appels restant pour les %d prochaines secondes)"
 
-#: src/MaintenanceTask/CleanCache.php:32
+#: src/BackendBehaviors.php:110
+msgid "One minute"
+msgstr "Une minute"
+
+#: src/BackendBehaviors.php:111
+msgid "One hour"
+msgstr "Une heure"
+
+#: src/BackendBehaviors.php:112
+msgid "One day"
+msgstr "Un jour"
+
+#: src/BackendBehaviors.php:113
+msgid "One week"
+msgstr "Une semaine"
+
+#: src/BackendBehaviors.php:114
+msgid "One month"
+msgstr "Un mois"
+
+#: src/BackendBehaviors.php:122
+msgid "User token lifetime:"
+msgstr "Durée de vie du jeton de l'utilisateur :"
+
+#: src/BackendBehaviors.php:129
+msgid "Fifteen minutes"
+msgstr "Quinze minutes"
+
+#: src/BackendBehaviors.php:130
+msgid "Half an hour"
+msgstr "Une demi heure"
+
+#: src/BackendBehaviors.php:132
+msgid "Two hours"
+msgstr "Deux heures"
+
+#: src/BackendBehaviors.php:141
+msgid "API calls rate limit period:"
+msgstr "Période de remise à zéro de la limite d'appels à l'API :"
+
+#: src/BackendBehaviors.php:160
+msgid "API server cache lifetime:"
+msgstr "Durée de vie du cache de l'API :"
+
+#: src/MaintenanceTask/CleanCache.php:28
 msgid "Empty API cache directory"
 msgstr "Vider le répertoire de cache de l'API"
 
-#: src/MaintenanceTask/CleanCache.php:33
+#: src/MaintenanceTask/CleanCache.php:29
 msgid "API cache directory emptied."
 msgstr "Répertoire de cache de l'API vidé"
 
-#: src/MaintenanceTask/CleanCache.php:34
+#: src/MaintenanceTask/CleanCache.php:30
 msgid "Failed to empty API cache directory."
 msgstr "Impossible de vider le répertoire de cache de l'API"
 
