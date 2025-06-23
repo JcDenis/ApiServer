@@ -1,7 +1,7 @@
 <?php
 // Language: Français
-// Module: ApiServer - 0.4
-// Date: 2025-06-22 09:13:12
+// Module: ApiServer - 0.5
+// Date: 2025-06-23 16:14:40
 // Author: , contact@jcdenis.fr
 // Translated with Translater - 2025.03.03
 
@@ -38,6 +38,10 @@ L10n::$locales['Half an hour'] = 'Une demi heure';
 L10n::$locales['Two hours'] = 'Deux heures';
 L10n::$locales['API calls rate limit period:'] = 'Période de remise à zéro de la limite d\'appels à l\'API :';
 L10n::$locales['API server cache lifetime:'] = 'Durée de vie du cache de l\'API :';
+L10n::$locales['Display API server statistics on dashboard'] = 'Afficher les statistiques de l\'API sur le tableau de bord';
+L10n::$locales['No statistics'] = 'Aucune statistique';
+L10n::$locales['Public API endpoints usage since %s'] = 'Utilisation des points d\'entrée de l\'API depuis %s';
+L10n::$locales['Clear statistics'] = 'Effacer les statistiques';
 L10n::$locales['Empty API cache directory'] = 'Vider le répertoire de cache de l\'API';
 L10n::$locales['API cache directory emptied.'] = 'Répertoire de cache de l\'API vidé';
 L10n::$locales['Failed to empty API cache directory.'] = 'Impossible de vider le répertoire de cache de l\'API';

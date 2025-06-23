@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\ApiServer;
 
+use ArrayObject, Exception;
 use Dotclear\App;
 use Dotclear\Database\Cursor;
 use Dotclear\Database\MetaRecord;
@@ -16,6 +17,13 @@ use Dotclear\Helper\Html\Form\Number;
 use Dotclear\Helper\Html\Form\None;
 use Dotclear\Helper\Html\Form\Para;
 use Dotclear\Helper\Html\Form\Select;
+use Dotclear\Helper\Html\Form\Strong;
+use Dotclear\Helper\Html\Form\Form;
+use Dotclear\Helper\Html\Form\Submit;
+use Dotclear\Helper\Html\Form\Text;
+use Dotclear\Helper\Html\Form\Note;
+use Dotclear\Helper\Html\Form\Ul;
+use Dotclear\Helper\Html\Form\Li;
 use Dotclear\Interface\Core\BlogSettingsInterface;
 use Dotclear\Plugin\maintenance\Maintenance;
 
@@ -192,5 +200,95 @@ class BackendBehaviors
 
         $blog_settings->get(My::id())->put('active', !empty($_POST[My::id() . 'active']), 'boolean');
         $blog_settings->get(My::id())->put('signup_perm', !empty($_POST[My::id() . 'signup_perm']), 'boolean');
+    }
+
+    /**
+     * Dashboard user options form.
+     */
+    public static function adminDashboardOptionsForm(): string
+    {
+        echo
+        (new Fieldset(My::id()))
+        ->legend(new Legend(My::name()))
+        ->fields([
+            (new Para())->items([
+                (new Checkbox(My::id() . 'dashboard_statistics', My::prefs()->dashboard_statistics))
+                    ->value(1)
+                    ->label((new Label(__('Display API server statistics on dashboard'), Label::INSIDE_TEXT_AFTER))),
+            ]),
+        ])
+        ->render();
+
+        return '';
+    }
+
+    /**
+     * Dashboard user options save.
+     */
+    public static function adminAfterDashboardOptionsUpdate(): string
+    {
+        try {
+            My::prefs()->put('dashboard_statistics', !empty($_POST[My::id() . 'dashboard_statistics']), App::userWorkspace()::WS_BOOL);
+        } catch (Exception $e) {
+            App::error()->add($e->getMessage());
+        }
+
+        return '';
+    }
+
+    /**
+     * Dashboard content display.
+     *
+     * @param      ArrayObject<int, ArrayObject<int, string>>  $contents  The contents
+     */
+    public static function adminDashboardContentsV2(ArrayObject $contents): string
+    {
+        if (My::prefs()->dashboard_statistics) {
+            if (!empty($_POST[My::id() . 'dellogs'])) {
+                ApiServerLogs::delLogs();
+            }
+
+            $lines = [];
+
+            if (($logs = ApiServerLogs::parseLogs()) !== []) {
+                foreach ($logs as $key => $value) {
+                    $lines[] = (new Li())
+                        ->separator(' : ')
+                        ->items([
+                            (new Strong($key)),
+                            (new Text(null, (string) $value)),
+                        ]);
+                }
+            }
+
+            if ($lines === []) {
+                $lines[] = (new Li())->text(__('No statistics'));
+            }
+            $res = (new Div(My::id() . 'statistics'))
+                ->class(['box', 'small'])
+                ->items([
+                    (new Text('h3', My::name())),
+                    (new Note())
+                        ->text(sprintf(__('Public API endpoints usage since %s'), ApiServerLogs::parseDate())),
+                    (new Ul())
+                        ->items($lines),
+                    (new Form(My::id() . '-form'))
+                        ->method('post')
+                        ->action(App::backend()->url()->get('admin.home'))
+                        ->items([
+                            (new Para())
+                                ->class('form-buttons')
+                                ->items([
+                                    (new Submit(My::id() . 'dellogs', __('Clear statistics'))),
+                                    App::nonce()->formNonce(),
+                                ]),
+                        ]),
+                ])
+            ->render();
+
+            $contents->append(new ArrayObject([$res]));
+        }
+
+        return '';
     }
 }

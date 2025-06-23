@@ -107,6 +107,8 @@ class ApiServer
                 }
             }
 
+            ApiServerLogs::addlog($this->endpoint);
+
             // Load API endpoint
             new $class($this);
 

@@ -29,11 +29,14 @@ class Backend extends Process
 
         // Behaviors
         App::behavior()->addBehaviors([
-            'dcMaintenanceInit'             => BackendBehaviors::dcMaintenanceInit(...),
-            'adminBeforeUserUpdate'         => BackendBehaviors::adminBeforeUserUpdate(...),
-            'adminUserForm'                 => BackendBehaviors::adminUserForm(...),
-            'adminBlogPreferencesFormV2'    => BackendBehaviors::adminBlogPreferencesFormV2(...),
-            'adminBeforeBlogSettingsUpdate' => BackendBehaviors::adminBeforeBlogSettingsUpdate(...),
+            'dcMaintenanceInit'                => BackendBehaviors::dcMaintenanceInit(...),
+            'adminBeforeUserUpdate'            => BackendBehaviors::adminBeforeUserUpdate(...),
+            'adminUserForm'                    => BackendBehaviors::adminUserForm(...),
+            'adminBlogPreferencesFormV2'       => BackendBehaviors::adminBlogPreferencesFormV2(...),
+            'adminBeforeBlogSettingsUpdate'    => BackendBehaviors::adminBeforeBlogSettingsUpdate(...),
+            'adminDashboardOptionsForm'        => BackendBehaviors::adminDashboardOptionsForm(...),
+            'adminAfterDashboardOptionsUpdate' => BackendBehaviors::adminAfterDashboardOptionsUpdate(...),
+            'adminDashboardContentsV2'         => BackendBehaviors::adminDashboardContentsV2(...),
         ]);
 
         return true;
