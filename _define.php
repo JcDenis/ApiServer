@@ -26,6 +26,7 @@ $this->registerModule(
         ],
         'settings' => [
             'blog' => '#params.ApiServer_params',
+            'pref' => '#user-favorites.ApiServer',
         ],
         'permissions' => 'My',
         'type'        => 'plugin',
