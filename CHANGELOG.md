@@ -1,3 +1,7 @@
+ApiServer 0.6 - 2025.06.23
+===========================================================
+* Add API usage to dashboard
+
 ApiServer 0.5 - 2025.06.22
 ===========================================================
 * Add option to set user permission on registration
