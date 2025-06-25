@@ -73,6 +73,7 @@ class ApiServerLogs
             $ids[] = $record->f('log_id');
         }
         App::log()->delLogs($ids);
+        self::$record = null;
     }
 
     /**
