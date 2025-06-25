@@ -6,24 +6,8 @@ namespace Dotclear\Plugin\ApiServer;
 
 use ArrayObject, Exception;
 use Dotclear\App;
-use Dotclear\Database\Cursor;
-use Dotclear\Database\MetaRecord;
-use Dotclear\Helper\Html\Form\Checkbox;
-use Dotclear\Helper\Html\Form\Div;
-use Dotclear\Helper\Html\Form\Fieldset;
-use Dotclear\Helper\Html\Form\Label;
-use Dotclear\Helper\Html\Form\Legend;
-use Dotclear\Helper\Html\Form\Number;
-use Dotclear\Helper\Html\Form\None;
-use Dotclear\Helper\Html\Form\Para;
-use Dotclear\Helper\Html\Form\Select;
-use Dotclear\Helper\Html\Form\Strong;
-use Dotclear\Helper\Html\Form\Form;
-use Dotclear\Helper\Html\Form\Submit;
-use Dotclear\Helper\Html\Form\Text;
-use Dotclear\Helper\Html\Form\Note;
-use Dotclear\Helper\Html\Form\Ul;
-use Dotclear\Helper\Html\Form\Li;
+use Dotclear\Database\{Cursor, MetaRecord };
+use Dotclear\Helper\Html\Form\{ Checkbox, Div, Fieldset, Form, Img, Label, Legend, Li, Note, Number, Para, Select, Strong, Submit, Text, Ul };
 use Dotclear\Interface\Core\BlogSettingsInterface;
 use Dotclear\Plugin\maintenance\Maintenance;
 
@@ -170,7 +154,7 @@ class BackendBehaviors
         }
 
         echo (new Fieldset(My::id() . '_params'))
-            ->legend(new Legend(My::name()))
+            ->legend(new Legend((new Img(My::icons()[0]))->class('icon-small')->render() . ' ' . My::name()))
             ->fields($fields)
             ->render();
     }
@@ -208,8 +192,8 @@ class BackendBehaviors
     public static function adminDashboardOptionsForm(): string
     {
         echo
-        (new Fieldset(My::id()))
-        ->legend(new Legend(My::name()))
+        (new Fieldset(My::id() . '_prefs'))
+        ->legend(new Legend((new Img(My::icons()[0]))->class('icon-small')->render() . ' ' . My::name()))
         ->fields([
             (new Para())->items([
                 (new Checkbox(My::id() . 'dashboard_statistics', My::prefs()->dashboard_statistics))
@@ -267,7 +251,7 @@ class BackendBehaviors
             $res = (new Div(My::id() . 'statistics'))
                 ->class(['box', 'small'])
                 ->items([
-                    (new Text('h3', My::name())),
+                    (new Text('h3', (new Img(My::icons()[0]))->class('icon-small')->render() . ' ' . My::name())),
                     (new Note())
                         ->text(sprintf(__('Public API endpoints usage since %s'), ApiServerLogs::parseDate())),
                     (new Ul())
