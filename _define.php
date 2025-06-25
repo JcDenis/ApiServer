@@ -18,21 +18,21 @@ $this->registerModule(
     'Dotclear public API',
     'Serv your blog through API',
     'Jean-Chirstian Paul Denis',
-    '0.6',
+    '0.7',
     [
         'requires' => [
             ['php', '8.3'],
             ['core', '2.34'],
         ],
         'settings' => [
-            'blog' => '#params.ApiServer_params',
-            'pref' => '#user-favorites.ApiServer',
+            'blog' => '#params.' . $this->id . '_params',
+            'pref' => '#user-favorites.' . $this->id . '_prefs',
         ],
         'permissions' => 'My',
         'type'        => 'plugin',
-        'support'     => 'https://github.com/JcDenis/ApiServer/issues',
-        'details'     => 'https://github.com/JcDenis/ApiServer',
-        'repository'  => 'https://raw.githubusercontent.com/JcDenis/ApiServer/master/dcstore.xml',
+        'support'     => 'https://github.com/JcDenis/' . $this->id . '/issues',
+        'details'     => 'https://github.com/JcDenis/' . $this->id . '/src/branch/master/README.md',
+        'repository'  => 'https://raw.githubusercontent.com/JcDenis/' . $this->id . '/master/dcstore.xml',
         'date'        => '2025-06-23T16:16:52+00:00',
     ]
 );
