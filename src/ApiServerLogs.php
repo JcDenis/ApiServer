@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\ApiServer;
 
-use ArrayObject;
 use Dotclear\App;
 use Dotclear\Database\MetaRecord;
 use Dotclear\Helper\Date;
@@ -18,9 +17,6 @@ use Dotclear\Helper\Date;
  */
 class ApiServerLogs
 {
-    /**
-     * @var     null|MetaRecord  $record
-     */
     private static ?MetaRecord $record = null;
 
     /**
