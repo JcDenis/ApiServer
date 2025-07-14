@@ -139,9 +139,9 @@ class ApiServerCache extends ApiServerLifetime
         $rsp = $this->expiredCache() ? new ApiServerResponse(code: 110) : ApiServerResponse::decode((string) file_get_contents($this->getFile()));
 
         return new ApiServerResponse(
+            content: $rsp->content,
             code:    $rsp->code,
             message: $rsp->message,
-            content: $rsp->content,
             cache:   true,
         );
     }
