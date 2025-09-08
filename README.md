@@ -2,7 +2,7 @@
 
 [![Release](https://img.shields.io/github/v/release/jcdenis/ApiServer?color=lightblue)](https://github.com/JcDenis/ApiServer/releases)
 ![Date](https://img.shields.io/github/release-date/jcdenis/ApiServer?color=red)
-[![Dotclear](https://img.shields.io/badge/dotclear-v2.33-137bbb.svg)](https://fr.dotclear.org/download)
+[![Dotclear](https://img.shields.io/badge/dotclear-v2.36-137bbb.svg)](https://fr.dotclear.org/download)
 [![Dotaddict](https://img.shields.io/badge/dotaddict-official-9ac123.svg)](https://plugins.dotaddict.org/dc2/details/ApiServer)
 [![License](https://img.shields.io/github/license/jcdenis/ApiServer?color=white)](https://github.com/JcDenis/ApiServer/blob/master/LICENSE)
 
@@ -14,7 +14,7 @@ _ApiServer_ is a plugin for the open-source web publishing software called [Dotc
 
 ## REQUIREMENTS
 
-* Dotclear 2.34
+* Dotclear 2.36
 * PHP 8.3+
 
 ## USAGE
