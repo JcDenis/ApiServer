@@ -6,7 +6,10 @@ namespace Dotclear\Plugin\ApiServer\Endpoint;
 
 use ArrayObject;
 use Dotclear\App;
-use Dotclear\Plugin\ApiServer\{ ApiServerEndpoint, ApiServerLifetime, ApiServerResponse, My };
+use Dotclear\Plugin\ApiServer\ApiServerEndpoint;
+use Dotclear\Plugin\ApiServer\ApiServerLifetime;
+use Dotclear\Plugin\ApiServer\ApiServerResponse;
+use Dotclear\Plugin\ApiServer\My;
 
 /**
  * @brief       ApiServer user API endpoint.

@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\ApiServer\Endpoint;
 
 use Dotclear\App;
-use Dotclear\Plugin\ApiServer\{ ApiServerEndpoint, ApiServerLifetime };
+use Dotclear\Plugin\ApiServer\ApiServerEndpoint;
+use Dotclear\Plugin\ApiServer\ApiServerLifetime;
 
 /**
  * @brief       ApiServer blog API endpoint.
