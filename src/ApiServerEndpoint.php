@@ -187,11 +187,12 @@ class ApiServerEndpoint
      *
      * @see     ApiServerException
      *
-     * @param   int     $code   The exception code
+     * @param   int     $code       The exception code
+     * @param   string  $message    The custom status message
      */
-    protected function setException(int $code): void
+    protected static function setException(int $code, string $message = ''): void
     {
-        throw new ApiServerException($code);
+        throw new ApiServerException($code, $message);
     }
 
     /**
