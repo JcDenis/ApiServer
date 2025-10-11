@@ -37,7 +37,7 @@ class Frontend
                     $perms           = App::users()->getUserPermissions($cur->user_id);
                     $perms           = $perms[App::blog()->id()]['p'] ?? [];
                     $perms[My::id()] = true;
-                    App::auth()->sudo([App::users(), 'setUserBlogPermissions'], $cur->user_id, App::blog()->id(), $perms);
+                    App::auth()->sudo(App::users()->setUserBlogPermissions(...), $cur->user_id, App::blog()->id(), $perms);
                 }
             },
         ]);

@@ -125,7 +125,7 @@ class ApiServerRate extends ApiServerLifetime
                 $cur               = App::auth()->openUserCursor();
                 $cur->user_options = new ArrayObject($options);
 
-                App::auth()->sudo([App::users(), 'updUser'], $user, $cur);
+                App::auth()->sudo(App::users()->updUser(...), $user, $cur);
             }
         }
     }
