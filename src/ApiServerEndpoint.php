@@ -19,14 +19,14 @@ class ApiServerEndpoint
     /**
      * Endpoint ID.
      *
-     * @var 	string 	ID
+     * @var     string  ID
      */
     public const ID = '';
 
     /**
      * Endpoint API supported versions.
      *
-     * @var 	array<int, string> 	VERSIONS
+     * @var     array<int, string>  VERSIONS
      */
     public const VERSIONS = [
         'v1',
@@ -45,7 +45,7 @@ class ApiServerEndpoint
      * This is the list of POST parameters that endpoint could use,
      * Set FIELDS[parmeter] to true if it is required.
      *
-     * @var 	array<string, bool> 	FIELDS
+     * @var     array<string, bool>     FIELDS
      */
     public const FIELDS = [];
 

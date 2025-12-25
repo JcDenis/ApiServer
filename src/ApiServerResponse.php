@@ -16,10 +16,10 @@ class ApiServerResponse
     /**
      * Create response content instance.
      *
-     * @param   array<int|string, mixed>    $content 	The response content
-     * @param 	int 						$code 		The response status code
-     * @param 	string 						$message 	The repsonse status custom message
-     * @param 	bool						$cache		Reponse comes form cache
+     * @param   array<int|string, mixed>    $content    The response content
+     * @param   int                         $code       The response status code
+     * @param   string                      $message    The repsonse status custom message
+     * @param   bool                        $cache      Reponse comes form cache
      */
     public function __construct(
         public readonly array $content = [],
@@ -45,7 +45,7 @@ class ApiServerResponse
     /**
      * Decode a json encoded content.
      *
-     * @param 	string 	$content 	The json encoded content.
+     * @param   string  $content    The json encoded content.
      */
     public static function decode(string $content): ApiServerResponse
     {

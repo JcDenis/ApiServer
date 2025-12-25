@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\ApiServer;
 
-use ArrayObject;
 use DateTime;
 use DateTimeZone;
-use Dotclear\App;
 
 /**
  * @brief       ApiServer core timestamp helper.

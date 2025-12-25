@@ -49,7 +49,7 @@ class ApiServerToken extends ApiServerLifetime
     /**
      * Encode user token.
      *
-     * @return 	string 	The authorization bearer header value.
+     * @return  string  The authorization bearer header value.
      */
     public function encode(): string
     {
@@ -68,7 +68,7 @@ class ApiServerToken extends ApiServerLifetime
     /**
      * Decode token.
      *
-     * @param 	string 	$bearer 	The authorization bearer header value.
+     * @param   string  $bearer     The authorization bearer header value.
      */
     public static function decode(string $bearer): self
     {
