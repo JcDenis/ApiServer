@@ -128,7 +128,14 @@ class ApiServerCache extends ApiServerLifetime
         $file = $this->getFile();
         clearstatcache();
 
-        return !$this->useCache() || !file_exists($file) || ((int) filemtime($file) + static::getLifeTime()) < time();
+        if (!$this->useCache()) {
+            return true;
+        }
+        if (!file_exists($file)) {
+            return true;
+        }
+
+        return ((int) filemtime($file) + static::getLifeTime()) < time();
     }
 
     /**
