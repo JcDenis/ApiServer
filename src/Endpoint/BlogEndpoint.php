@@ -24,12 +24,14 @@ class BlogEndpoint extends ApiServerEndpoint
 
     protected function callEndpoint(): void
     {
+        $nb_posts = is_numeric($nb_posts = App::blog()->getPosts([], true)->f(0)) ? (int) $nb_posts : 0;
+
         $this->setContent([
             'name'        => App::blog()->name(),
             'url'         => App::blog()->url(),
             'description' => App::blog()->desc(),
             'update'      => ApiServerLifetime::formatTime(App::blog()->upddt()),
-            'nb_posts'    => App::blog()->getPosts([], true)->f(0),
+            'nb_posts'    => $nb_posts,
         ]);
     }
 }

@@ -21,8 +21,12 @@ class EndpointsEndpoint extends ApiServerEndpoint
 
     protected function callEndpoint(): void
     {
+        /**
+         * @var array<string, array<string, bool>>
+         */
         $res = [];
         foreach ($this->api->getEndpoints() as $id => $class) {
+            // $class::FIELDS : array<string, bool>
             $res[$id] = $class::FIELDS;
         }
 

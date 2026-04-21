@@ -50,13 +50,18 @@ class BackendBehaviors
      */
     public static function adminBeforeUserUpdate(Cursor $cur, string $user_id): void
     {
-        $limit = abs((int) $_POST[My::id() . 'rate_limit'] ?: ApiServerRate::getDefaultCallsLimit());
+        $limit = isset($_POST[My::id() . 'rate_limit']) && is_numeric($limit = $_POST[My::id() . 'rate_limit']) ? abs((int) $limit) : 0;
+        if ($limit === 0) {
+            $limit = ApiServerRate::getDefaultCallsLimit();
+        }
 
-        $cur->user_options[My::id()] = [
-            'reset'  => ApiServerRate::getEndTime(),
-            'limit'  => $limit,
-            'remain' => $limit,
-        ];
+        if (is_array($cur->user_options)) {
+            $cur->user_options[My::id()] = [
+                'reset'  => ApiServerRate::getEndTime(),
+                'limit'  => $limit,
+                'remain' => $limit,
+            ];
+        }
     }
 
     /**
@@ -69,12 +74,17 @@ class BackendBehaviors
         }
         $res = $rs->option(My::id());
 
+        $limit = is_array($res) && isset($res['limit']) && is_numeric($limit = $res['limit']) ? abs((int) $limit) : 0;
+        if ($limit === 0) {
+            $limit = ApiServerRate::getDefaultCallsLimit();
+        }
+
         echo (new Div())
             ->items([
                 (new Para())
                     ->items([
                         (new Number(My::id() . 'rate_limit', 10, 9999))
-                            ->value((string) (is_array($res) && isset($res['limit']) ? $res['limit'] : ApiServerRate::getDefaultCallsLimit()))
+                            ->value($limit)
                             ->label((new Label(sprintf(__('API call limit per %d seconds:'), ApiServerRate::getLifeTime()), Label::OL_TF))),
                     ]),
             ])
@@ -93,7 +103,7 @@ class BackendBehaviors
         $fields = [
             (new Para())
                 ->items([
-                    (new Checkbox(My::id() . 'active', $blog_settings->get(My::id())->get('active')))
+                    (new Checkbox(My::id() . 'active', (bool) $blog_settings->get(My::id())->get('active')))
                         ->value(1)
                         ->label((new Label(__('Enable public API for this blog'), Label::IL_FT))),
                 ]),
@@ -106,11 +116,12 @@ class BackendBehaviors
         ];
 
         if (!$rs->isEmpty()) {
+            $log_msg  = is_numeric($log_msg = $rs->f('log_msg')) ? (int) $log_msg : 0;
             $fields[] = (new Para())
                 ->items([
                     (new Checkbox(My::id() . 'reset', false))
                         ->value(1)
-                        ->label((new Label(sprintf(__('Reset anonymous API calls limit. (%d calls remaining for next %d seconds)'), (int) $rs->f('log_msg'), ApiServerRate::getLifeTime()), Label::IL_FT))),
+                        ->label((new Label(sprintf(__('Reset anonymous API calls limit. (%d calls remaining for next %d seconds)'), $log_msg, ApiServerRate::getLifeTime()), Label::IL_FT))),
                 ]);
         }
 
@@ -123,11 +134,13 @@ class BackendBehaviors
                 __('One month')  => '2592000',
             ];
 
+            $token_lifetime = is_numeric($token_lifetime = $blog_settings->get(My::id())->get('token_lifetime')) ? (int) $token_lifetime : 3600;
+
             $fields[] = (new Para())
                 ->items([
                     (new Select(My::id() . 'token_lifetime'))
                         ->items($values)
-                        ->default((string) ((int) $blog_settings->get(My::id())->get('token_lifetime') ?: '3600'))
+                        ->default((string) $token_lifetime)
                         ->label((new Label(__('User token lifetime:'), Label::OUTSIDE_TEXT_BEFORE))),
                 ]);
         }
@@ -142,11 +155,13 @@ class BackendBehaviors
                 __('One day')         => '86400',
             ];
 
+            $rate_lifetime = is_numeric($rate_lifetime = $blog_settings->get(My::id())->get('rate_lifetime')) ? (int) $rate_lifetime : 3600;
+
             $fields[] = (new Para())
                 ->items([
                     (new Select(My::id() . 'rate_lifetime'))
                         ->items($values)
-                        ->default((string) ((int) $blog_settings->get(My::id())->get('rate_lifetime') ?: '3600'))
+                        ->default((string) $rate_lifetime)
                         ->label((new Label(__('API calls rate limit period:'), Label::OUTSIDE_TEXT_BEFORE))),
                 ]);
         }
@@ -161,11 +176,13 @@ class BackendBehaviors
                 __('One day')         => '86400',
             ];
 
+            $cache_lifetime = is_numeric($cache_lifetime = $blog_settings->get(My::id())->get('cache_lifetime')) ? (int) $cache_lifetime : 3600;
+
             $fields[] = (new Para())
                 ->items([
                     (new Select(My::id() . 'cache_lifetime'))
                         ->items($values)
-                        ->default((string) ((int) $blog_settings->get(My::id())->get('cache_lifetime') ?: '3600'))
+                        ->default((string) $cache_lifetime)
                         ->label((new Label(__('API server cache lifetime:'), Label::OUTSIDE_TEXT_BEFORE))),
                 ]);
         }
@@ -186,17 +203,26 @@ class BackendBehaviors
         if (!empty($_POST[My::id() . 'reset'])) {
             $rs = App::log()->getLogs(['log_table' => My::id() . 'rate']);
             while ($rs->fetch()) {
-                App::log()->delLog((int) $rs->f('log_id'));
+                $log_id = is_numeric($log_id = $rs->f('log_id')) ? (int) $log_id : 0;
+                if ($log_id !== 0) {
+                    App::log()->delLog($log_id);
+                }
             }
         }
+
         if (!defined('APISERVER_DEFAULT_TOKEN_LIFETIME') && !empty($_POST[My::id() . 'token_lifetime'])) {
-            $blog_settings->get(My::id())->put('token_lifetime', (int) $_POST[My::id() . 'token_lifetime'], 'integer');
+            $token_lifetime = is_numeric($token_lifetime = $_POST[My::id() . 'token_lifetime']) ? (int) $token_lifetime : 3600;
+            $blog_settings->get(My::id())->put('token_lifetime', $token_lifetime, 'integer');
         }
+
         if (!defined('APISERVER_DEFAULT_RATE_LIFETIME') && !empty($_POST[My::id() . 'rate_lifetime'])) {
-            $blog_settings->get(My::id())->put('rate_lifetime', (int) $_POST[My::id() . 'rate_lifetime'], 'integer');
+            $rate_lifetime = is_numeric($rate_lifetime = $_POST[My::id() . 'rate_lifetime']) ? (int) $rate_lifetime : 3600;
+            $blog_settings->get(My::id())->put('rate_lifetime', $rate_lifetime, 'integer');
         }
+
         if (!defined('APISERVER_DEFAULT_CACHE_LIFETIME') && !empty($_POST[My::id() . 'cache_lifetime'])) {
-            $blog_settings->get(My::id())->put('cache_lifetime', (int) $_POST[My::id() . 'cache_lifetime'], 'integer');
+            $cache_lifetime = is_numeric($cache_lifetime = $_POST[My::id() . 'cache_lifetime']) ? (int) $cache_lifetime : 600;
+            $blog_settings->get(My::id())->put('cache_lifetime', $cache_lifetime, 'integer');
         }
 
         $blog_settings->get(My::id())->put('active', !empty($_POST[My::id() . 'active']), 'boolean');
@@ -213,7 +239,7 @@ class BackendBehaviors
         ->legend(new Legend((new Img(My::icons()[0]))->class('icon-small')->render() . ' ' . My::name()))
         ->fields([
             (new Para())->items([
-                (new Checkbox(My::id() . 'dashboard_statistics', My::prefs()->dashboard_statistics))
+                (new Checkbox(My::id() . 'dashboard_statistics', (bool) My::prefs()->dashboard_statistics))
                     ->value(1)
                     ->label((new Label(__('Display API server statistics on dashboard'), Label::INSIDE_TEXT_AFTER))),
             ]),

@@ -34,9 +34,15 @@ class ApiServerResponse
      */
     public function encode(): string
     {
+        $message = $this->message;
+        if ($message === '') {
+            $codes   = ApiServerException::codes();
+            $message = isset($codes[$this->code]) ? $message : '';
+        }
+
         return (string) json_encode([
             'code'    => $this->code,
-            'message' => $this->message ?: (ApiServerException::codes()[$this->code] ?? ''),
+            'message' => $message,
             'content' => $this->content,
             'cache'   => $this->cache ? '1' : '0',
         ]);
@@ -49,13 +55,31 @@ class ApiServerResponse
      */
     public static function decode(string $content): ApiServerResponse
     {
-        $res = json_decode((string) ($content ?: json_encode([])), true);
+        $res = [
+            'content' => [],
+            'code'    => 110,
+            'message' => '',
+            'cache'   => true,
+        ];
+
+        $payload = $content !== '' ? json_decode($content, true) : [];
+        if (is_array($payload)) {
+            if (isset($payload['content']) && is_array($payload['content'])) {
+                $res['content'] = $payload['content'];
+            }
+            if (isset($payload['code']) && is_numeric($payload['code'])) {
+                $res['code'] = (int) $payload['code'];
+            }
+            if (isset($payload['message']) && is_string($payload['message'])) {
+                $res['message'] = $payload['message'];
+            }
+        }
 
         return new self(
-            content: $res['content'] ?? [],
-            code:    $res['code']    ?? 110,
-            message: $res['message'] ?? '',
-            cache:   true,
+            content: $res['content'],
+            code:    $res['code'],
+            message: $res['message'],
+            cache:   $res['cache'],
         );
     }
 }

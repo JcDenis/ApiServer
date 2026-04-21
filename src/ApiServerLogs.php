@@ -38,7 +38,10 @@ class ApiServerLogs
     {
         $record = self::getLogs();
 
-        return Date::dt2str(__('%Y-%m-%d %H:%M'), $record->isEmpty() ? 'now' : $record->f('log_dt'), App::auth()->getInfo('user_tz'));
+        $user_tz = is_string($user_tz = App::auth()->getInfo('user_tz')) ? $user_tz : 'UTC';
+        $log_dt  = !$record->isEmpty() && is_string($log_dt = $record->f('log_dt')) ? $log_dt : 'now';
+
+        return Date::dt2str(__('%Y-%m-%d %H:%M'), $log_dt, $user_tz);
     }
 
     /**
@@ -49,8 +52,17 @@ class ApiServerLogs
     public static function parseLogs(): array
     {
         $record = self::getLogs();
-        $logs   = $record->isEmpty() ? [] : json_decode($record->f('log_msg'), true);
-        arsort($logs);
+
+        /**
+         * @var array<string, int> $logs
+         */
+        $logs = [];
+
+        $log_msg = !$record->isEmpty() && is_string($log_msg = $record->f('log_msg')) ? json_decode($log_msg, true) : [];
+        if (is_array($log_msg) && $log_msg !== []) {
+            arsort($log_msg);
+            $logs = array_filter($log_msg, fn ($value, $key): bool => is_string($key) && is_int($value), ARRAY_FILTER_USE_BOTH);
+        }
 
         return $logs;
     }
@@ -66,7 +78,10 @@ class ApiServerLogs
         }
         $ids = [];
         while ($record->fetch()) {
-            $ids[] = $record->f('log_id');
+            $log_id = is_numeric($log_id = $record->f('log_id')) ? (int) $log_id : 0;
+            if ($log_id !== 0) {
+                $ids[] = $log_id;
+            }
         }
         App::log()->delLogs($ids);
         self::$record = null;
@@ -80,12 +95,20 @@ class ApiServerLogs
     public static function addLog(string $endpoint): void
     {
         $record = self::getLogs();
-        $time   = $record->isEmpty() ? time() : (int) strtotime($record->f('log_dt'));
-        $logs   = $record->isEmpty() ? [] : json_decode($record->f('log_msg'), true);
+
+        $time = !$record->isEmpty() && is_string($log_dt = $record->f('log_dt')) ? (int) strtotime($log_dt) : time();
+        $logs = !$record->isEmpty() && is_string($log_msg = $record->f('log_msg')) ? json_decode($log_msg, true) : [];
+
+        if (!is_array($logs)) {
+            $logs = [];
+        }
+
+        //$time   = $record->isEmpty() ? time() : (int) strtotime($log_dt);
+        //$logs   = $record->isEmpty() ? [] : json_decode($record->f('log_msg'), true);
 
         self::delLogs();
 
-        if (!isset($logs[$endpoint])) {
+        if (!isset($logs[$endpoint]) || !is_int($logs[$endpoint])) {
             $logs[$endpoint] = 0;
         }
         $logs[$endpoint] += 1;

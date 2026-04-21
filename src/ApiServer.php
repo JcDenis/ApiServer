@@ -41,7 +41,7 @@ class ApiServer
     /**
      * The registred endpoints.
      *
-     * @var    array<string, string>    $endpoints
+     * @var    array<string, class-string>    $endpoints
      */
     private array $endpoints = [];
 
@@ -97,8 +97,13 @@ class ApiServer
             }
             $class = $this->endpoints[$this->endpoint];
 
+            /**
+             * @var array<string, bool>
+             */
+            $fields = $class::FIELDS;
+
             // Check POST params. If an argument is present it MUST not be empty !!!
-            foreach ($class::FIELDS as $field => $required) {
+            foreach ($fields as $field => $required) {
                 if (($required || isset($_POST[$field])) && empty($_POST[$field])) {
                     throw new ApiServerException(104);
                 }
@@ -169,7 +174,7 @@ class ApiServer
     /**
      * Get registered endpoints.
      *
-     * @return  array<string, string>   The endpoint ID/class name
+     * @return  array<string, class-string>   The endpoint ID/class name
      */
     public function getEndpoints(): array
     {
@@ -255,6 +260,6 @@ class ApiServer
         }
         $headers = array_change_key_case($headers, CASE_LOWER);
 
-        return $headers['x-api-version'] ?? self::VERSION;
+        return isset($headers['x-api-version']) && is_string($api_version = $headers['x-api-version']) ? $api_version : self::VERSION;
     }
 }

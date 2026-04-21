@@ -57,9 +57,14 @@ class ApiServerRate extends ApiServerLifetime
                 'limit'     => 1,
             ]);
             if (!$rs->isEmpty()) {
-                $dt             = DateTime::createFromFormat('Y-m-d H:i:s', $rs->f('log_dt'), new DateTimeZone('UTC'));
-                $rate['remain'] = (int) $rs->f('log_msg');
-                $rate['reset']  = $dt ? $dt->format('U') : time();
+                $log_dt  = is_string($log_dt = $rs->f('log_dt')) ? $log_dt : '';
+                $log_msg = is_numeric($log_msg = $rs->f('log_msg')) ? (int) $log_msg : 0;
+
+                $dt    = DateTime::createFromFormat('Y-m-d H:i:s', $log_dt, new DateTimeZone('UTC'));
+                $reset = $dt instanceof DateTime ? (int) $dt->format('U') : time();
+
+                $rate['remain'] = $log_msg;
+                $rate['reset']  = $reset;
             }
         } else {
             // Get authenticate rate limit
@@ -69,13 +74,13 @@ class ApiServerRate extends ApiServerLifetime
 
         // Parse user values
         if (is_array($rate)) {
-            if (isset($rate['limit'])) {
+            if (isset($rate['limit']) && is_numeric($rate['limit'])) {
                 $this->limit = abs((int) $rate['limit']);
             }
-            if (isset($rate['remain'])) {
+            if (isset($rate['remain']) && is_numeric($rate['remain'])) {
                 $this->remain = abs((int) $rate['remain']);
             }
-            if (isset($rate['reset'])) {
+            if (isset($rate['reset']) && is_numeric($rate['reset'])) {
                 $this->reset = abs((int) $rate['reset']);
             }
             if ($this->remain > $this->limit) {
@@ -104,7 +109,10 @@ class ApiServerRate extends ApiServerLifetime
             if ($user === '') {
                 // Clean old logs
                 while (App::log()->getLogs(['log_table' => My::id() . 'rate'])->fetch()) {
-                    App::log()->delLog((int) $rs->f('log_id'));
+                    $log_id = is_numeric($log_id = $rs->f('log_id')) ? (int) $log_id : 0;
+                    if ($log_id !== 0) {
+                        App::log()->delLog($log_id);
+                    }
                 }
 
                 // Set anonymous rate limit
@@ -189,7 +197,7 @@ class ApiServerRate extends ApiServerLifetime
      */
     public static function getDefaultCallsLimit(): int
     {
-        return (int) (defined('API_SERVER_DEFAULT_CALLS_LIMIT') ? API_SERVER_DEFAULT_CALLS_LIMIT : 2000);
+        return is_numeric($limit = constant('API_SERVER_DEFAULT_CALLS_LIMIT')) ? (int) $limit : 3600;
     }
 
     /**
@@ -198,7 +206,7 @@ class ApiServerRate extends ApiServerLifetime
     public static function getLifeTime(): int
     {
         if (defined('APISERVER_DEFAULT_RATE_LIFETIME')) {
-            $lifetime = (int) APISERVER_DEFAULT_RATE_LIFETIME;
+            $lifetime = is_numeric($lifetime = constant('APISERVER_DEFAULT_RATE_LIFETIME')) ? (int) $lifetime : 3600;
         } elseif (is_numeric(My::settings()->get('rate_lifetime'))) {
             $lifetime = (int) My::settings()->get('rate_lifetime');
         } else {

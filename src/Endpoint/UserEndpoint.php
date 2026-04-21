@@ -25,8 +25,13 @@ class UserEndpoint extends ApiServerEndpoint
 
     protected function callEndpoint(): void
     {
+        $user_cn = is_string($user_cn = App::auth()->getInfo('user_cn')) ? $user_cn : '';
+        if ($user_cn === '') {
+            $user_cn = App::auth()->userID() ?? '';
+        }
+
         $content = [
-            'name'        => App::auth()->getInfo('user_cn'),
+            'name'        => $user_cn,
             'token'       => $this->token->encode(),
             'token_reset' => ApiServerLifetime::formatTime($this->token->reset),
             'rate_limit'  => $this->rate->getLimit(),
@@ -35,13 +40,17 @@ class UserEndpoint extends ApiServerEndpoint
         ];
 
         // Additonal user info
+
+        /**
+         * @var ArrayObject<array-key, mixed>
+         */
         $more = new ArrayObject();
 
         # --BEHAVIOR-- ApiServerUserEndpointContent -- ApiServerEndpoint, ArrayObject
         App::behavior()->callBehavior(My::id() . 'UserEndpointContent', $this, $more);
 
         foreach ($more as $key => $value) {
-            if (!array_key_exists($key, $content) && (is_string($value) || is_int($value))) { // @phpstan-ignore-line
+            if (!array_key_exists($key, $content) && is_scalar($value)) {
                 $content[$key] = $value;
             }
         }

@@ -139,6 +139,9 @@ class ApiServerEndpoint
      */
     protected function setUser(string $username, ?string $password = null): void
     {
+        // Variable data helpers
+        $_Int = fn (mixed $var, int $default = 0): int => $var !== null && is_numeric($val = $var) ? (int) $val : $default;
+
         // User is allready checked
         if (is_null($password) && $this->token->user !== '' && $this->token->user === $username) {
             // Only load user info
@@ -148,7 +151,7 @@ class ApiServerEndpoint
             // Check user perms
         } elseif (App::auth()->checkUser($username, $password, null, false) === true
          && App::auth()->check(My::id(), App::blog()->id())                 === true
-         && !App::status()->user()->isRestricted((int) App::auth()->getInfo('user_status'))
+         && !App::status()->user()->isRestricted($_Int(App::auth()->getInfo('user_status')))
          && !App::auth()->mustChangePassword()
         ) {
             $this->token = ApiServerToken::newFromUser((string) App::auth()->userID());
@@ -200,7 +203,7 @@ class ApiServerEndpoint
      *
      * @see     sendContent
      *
-     * @param   array<string, mixed>    $content    The response content array
+     * @param   array<int|string, mixed>    $content    The response content array
      */
     protected function setContent(array $content): void
     {

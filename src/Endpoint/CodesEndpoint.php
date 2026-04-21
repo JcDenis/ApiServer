@@ -25,7 +25,12 @@ class CodesEndpoint extends ApiServerEndpoint
     protected function callEndpoint(): void
     {
         $codes = ApiServerException::codes();
-        $res   = json_decode((string) json_encode($codes), true); // convert key to string
+
+        /**
+         * @var array<int|string, mixed>
+         */
+        $res = json_decode((string) json_encode($codes), true); // convert key to string
+
         if ($this->api->getParam('code') !== '' && isset($codes[(int) $this->api->getParam('code')])) {
             $res = [
                 'message' => $codes[(int) $this->api->getParam('code')],

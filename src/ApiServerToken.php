@@ -78,11 +78,11 @@ class ApiServerToken extends ApiServerLifetime
                 [My::id() . self::VERSION => new Key(App::config()->masterKey(), self::ALGORITHM)]
             );
 
-            return new self(
-                (string) $decode->user,
-                (int) $decode->iat,
-                (int) $decode->exp
-            );
+            $user = is_string($user = $decode->user) ? $user : '';
+            $iat  = is_numeric($iat = $decode->iat) ? (int) $iat : 0;
+            $exp  = is_numeric($exp = $decode->exp) ? (int) $exp : 0;
+
+            return new self($user, $iat, $exp);
         } catch (Throwable) {
             return self::newFromUser('');
         }
@@ -105,7 +105,7 @@ class ApiServerToken extends ApiServerLifetime
     {
         $headers = getallheaders();
 
-        return self::decode(isset($headers['Authorization']) ? str_replace('Bearer ', '', (string) $headers['Authorization']) : '');
+        return self::decode(isset($headers['Authorization']) && is_string($headers['Authorization']) ? str_replace('Bearer ', '', $headers['Authorization']) : '');
     }
 
     /**
@@ -114,7 +114,7 @@ class ApiServerToken extends ApiServerLifetime
     public static function getLifeTime(): int
     {
         if (defined('APISERVER_DEFAULT_TOKEN_LIFETIME')) {
-            $lifetime = (int) APISERVER_DEFAULT_TOKEN_LIFETIME;
+            $lifetime = is_numeric($lifetime = constant('APISERVER_DEFAULT_TOKEN_LIFETIME')) ? (int) $lifetime : 3600;
         } elseif (is_numeric(My::settings()->get('token_lifetime'))) {
             $lifetime = (int) My::settings()->get('token_lifetime');
         } else {
