@@ -18,7 +18,7 @@ $this->registerModule(
     'Dotclear public API',
     'Serv your blog through API',
     'Jean-Chirstian Paul Denis',
-    '0.8.1',
+    '0.9',
     [
         'requires' => [
             ['php', '8.3'],
