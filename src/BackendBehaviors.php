@@ -55,7 +55,7 @@ class BackendBehaviors
             $limit = ApiServerRate::getDefaultCallsLimit();
         }
 
-        if (is_array($cur->user_options)) {
+        if (is_array($cur->user_options) || $cur->user_options instanceof ArrayObject) {
             $cur->user_options[My::id()] = [
                 'reset'  => ApiServerRate::getEndTime(),
                 'limit'  => $limit,
