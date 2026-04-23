@@ -197,7 +197,7 @@ class ApiServerRate extends ApiServerLifetime
      */
     public static function getDefaultCallsLimit(): int
     {
-        return is_numeric($limit = constant('API_SERVER_DEFAULT_CALLS_LIMIT')) ? (int) $limit : 3600;
+        return defined('API_SERVER_DEFAULT_CALLS_LIMIT') && is_numeric($limit = constant('API_SERVER_DEFAULT_CALLS_LIMIT')) ? (int) $limit : 3600;
     }
 
     /**
