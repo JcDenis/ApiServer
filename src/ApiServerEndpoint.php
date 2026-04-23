@@ -11,7 +11,7 @@ use Dotclear\Helper\Network\Http;
  * @brief       ApiServer core endpoint.
  * @ingroup     ApiServer
  *
- * @author      Jean-Chirstian Paul Denis
+ * @author      Jean-Christian Paul Denis
  * @copyright   AGPL-3.0
  */
 class ApiServerEndpoint

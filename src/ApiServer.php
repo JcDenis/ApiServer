@@ -12,7 +12,7 @@ use Throwable;
  * @brief       ApiServer core.
  * @ingroup     ApiServer
  *
- * @author      Jean-Chirstian Paul Denis
+ * @author      Jean-Christian Paul Denis
  * @copyright   AGPL-3.0
  */
 class ApiServer

@@ -12,7 +12,7 @@ use Dotclear\Helper\Process\TraitProcess;
  * @brief       ApiServer module prepend.
  * @ingroup     ApiServer
  *
- * @author      Jean-Chirstian Paul Denis
+ * @author      Jean-Christian Paul Denis
  * @copyright   AGPL-3.0
  */
 class Prepend
@@ -46,7 +46,9 @@ class Prepend
             My::id(),
             'api',
             '^api/((\w+)(/.+)?(/)?)$',
-            function (?string $args): void { new ApiServer((string) $args); }
+            function (?string $args): void {
+                new ApiServer((string) $args);
+            }
         );
 
         return true;

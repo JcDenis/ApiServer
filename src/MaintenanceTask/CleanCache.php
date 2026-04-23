@@ -11,7 +11,7 @@ use Dotclear\Plugin\maintenance\MaintenanceTask;
  * @brief       ApiServer module maintenance task to clean cache
  * @ingroup     ApiServer
  *
- * @author      Jean-Chirstian Paul Denis
+ * @author      Jean-Christian Paul Denis
  * @copyright   AGPL-3.0
  */
 class CleanCache extends MaintenanceTask

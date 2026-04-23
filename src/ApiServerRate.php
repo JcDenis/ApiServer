@@ -13,7 +13,7 @@ use Dotclear\App;
  * @brief       ApiServer core rate limit.
  * @ingroup     ApiServer
  *
- * @author      Jean-Chirstian Paul Denis
+ * @author      Jean-Christian Paul Denis
  * @copyright   AGPL-3.0
  */
 class ApiServerRate extends ApiServerLifetime

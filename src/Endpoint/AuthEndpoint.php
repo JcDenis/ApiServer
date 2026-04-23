@@ -8,7 +8,7 @@ namespace Dotclear\Plugin\ApiServer\Endpoint;
  * @brief       ApiServer authentication API endpoint.
  * @ingroup     ApiServer
  *
- * @author      Jean-Chirstian Paul Denis
+ * @author      Jean-Christian Paul Denis
  * @copyright   AGPL-3.0
  */
 class AuthEndpoint extends UserEndpoint

@@ -11,7 +11,7 @@ use Dotclear\Plugin\ApiServer\ApiServerResponse;
  * @brief       ApiServer user API endpoint.
  * @ingroup     ApiServer
  *
- * @author      Jean-Chirstian Paul Denis
+ * @author      Jean-Christian Paul Denis
  * @copyright   AGPL-3.0
  */
 class EndpointsEndpoint extends ApiServerEndpoint

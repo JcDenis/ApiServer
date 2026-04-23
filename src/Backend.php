@@ -11,7 +11,7 @@ use Dotclear\Helper\Process\TraitProcess;
  * @brief       ApiServer module backend process.
  * @ingroup     ApiServer
  *
- * @author      Jean-Chirstian Paul Denis
+ * @author      Jean-Christian Paul Denis
  * @copyright   AGPL-3.0
  */
 class Backend

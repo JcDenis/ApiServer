@@ -14,7 +14,7 @@ use Dotclear\Plugin\ApiServer\ApiServerLifetime;
  *
  * For now, this endpoint experiment anonymous query.
  *
- * @author      Jean-Chirstian Paul Denis
+ * @author      Jean-Christian Paul Denis
  * @copyright   AGPL-3.0
  */
 class BlogEndpoint extends ApiServerEndpoint
