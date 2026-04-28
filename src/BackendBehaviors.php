@@ -212,21 +212,21 @@ class BackendBehaviors
 
         if (!defined('APISERVER_DEFAULT_TOKEN_LIFETIME') && !empty($_POST[My::id() . 'token_lifetime'])) {
             $token_lifetime = is_numeric($token_lifetime = $_POST[My::id() . 'token_lifetime']) ? (int) $token_lifetime : 3600;
-            $blog_settings->get(My::id())->put('token_lifetime', $token_lifetime, 'integer');
+            $blog_settings->get(My::id())->put('token_lifetime', $token_lifetime, App::blogWorkspace()::NS_INT);
         }
 
         if (!defined('APISERVER_DEFAULT_RATE_LIFETIME') && !empty($_POST[My::id() . 'rate_lifetime'])) {
             $rate_lifetime = is_numeric($rate_lifetime = $_POST[My::id() . 'rate_lifetime']) ? (int) $rate_lifetime : 3600;
-            $blog_settings->get(My::id())->put('rate_lifetime', $rate_lifetime, 'integer');
+            $blog_settings->get(My::id())->put('rate_lifetime', $rate_lifetime, App::blogWorkspace()::NS_INT);
         }
 
         if (!defined('APISERVER_DEFAULT_CACHE_LIFETIME') && !empty($_POST[My::id() . 'cache_lifetime'])) {
             $cache_lifetime = is_numeric($cache_lifetime = $_POST[My::id() . 'cache_lifetime']) ? (int) $cache_lifetime : 600;
-            $blog_settings->get(My::id())->put('cache_lifetime', $cache_lifetime, 'integer');
+            $blog_settings->get(My::id())->put('cache_lifetime', $cache_lifetime, App::blogWorkspace()::NS_INT);
         }
 
-        $blog_settings->get(My::id())->put('active', !empty($_POST[My::id() . 'active']), 'boolean');
-        $blog_settings->get(My::id())->put('signup_perm', !empty($_POST[My::id() . 'signup_perm']), 'boolean');
+        $blog_settings->get(My::id())->put('active', !empty($_POST[My::id() . 'active']), App::blogWorkspace()::NS_BOOL);
+        $blog_settings->get(My::id())->put('signup_perm', !empty($_POST[My::id() . 'signup_perm']), App::blogWorkspace()::NS_BOOL);
     }
 
     /**
