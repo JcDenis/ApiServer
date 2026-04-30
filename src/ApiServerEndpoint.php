@@ -126,7 +126,7 @@ class ApiServerEndpoint
      */
     public function getUser(): string
     {
-        return $this->token->user ?? '';
+        return $this->token->user;
     }
 
     /**
