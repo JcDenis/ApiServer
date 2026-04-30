@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 // Language: Français
 // Module: ApiServer - 0.5
 // Date: 2025-06-23 16:14:40
