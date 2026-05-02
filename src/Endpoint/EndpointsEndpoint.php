@@ -17,6 +17,7 @@ use Dotclear\Plugin\ApiServer\ApiServerResponse;
 class EndpointsEndpoint extends ApiServerEndpoint
 {
     public const ID   = 'endpoints';
+
     public const RATE = 0;
 
     protected function callEndpoint(): void

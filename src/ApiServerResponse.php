@@ -67,9 +67,11 @@ class ApiServerResponse
             if (isset($payload['content']) && is_array($payload['content'])) {
                 $res['content'] = $payload['content'];
             }
+
             if (isset($payload['code']) && is_numeric($payload['code'])) {
                 $res['code'] = (int) $payload['code'];
             }
+
             if (isset($payload['message']) && is_string($payload['message'])) {
                 $res['message'] = $payload['message'];
             }

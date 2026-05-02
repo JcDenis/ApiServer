@@ -67,9 +67,11 @@ class ApiServer
             if (str_starts_with($args, '/')) {
                 $args = substr($args, 1);
             }
+
             if (str_ends_with($args, '/')) {
                 $args = substr($args, 0, -1);
             }
+
             $args = explode('/', $args);
 
             // Set properties
@@ -83,7 +85,7 @@ class ApiServer
             }
 
             // Check API version
-            if (!in_array($this->version, ApiServerEndpoint::VERSIONS)) {
+            if (!in_array($this->version, ApiServerEndpoint::VERSIONS, true)) {
                 throw new ApiServerException(103);
             }
 
@@ -95,6 +97,7 @@ class ApiServer
             if (!isset($this->endpoints[$this->endpoint])) {
                 throw new ApiServerException(102);
             }
+
             $class = $this->endpoints[$this->endpoint];
 
             /**
@@ -107,6 +110,7 @@ class ApiServer
                 if (($required || isset($_POST[$field])) && empty($_POST[$field])) {
                     throw new ApiServerException(104);
                 }
+
                 if (!empty($_POST[$field]) && (is_int($_POST[$field]) || is_string($_POST[$field]))) {
                     $this->post[(string) $field] = (string) $_POST[$field];
                 }
@@ -119,8 +123,8 @@ class ApiServer
 
             // Should not be here
             throw new ApiServerException(105);
-        } catch (Throwable $e) {
-            throw new ApiServerException((int) $e->getCode(), $e->getMessage());
+        } catch (Throwable $throwable) {
+            throw new ApiServerException((int) $throwable->getCode(), $throwable->getMessage());
         }
     }
 
@@ -258,6 +262,7 @@ class ApiServer
                 }
             }
         }
+
         $headers = array_change_key_case($headers, CASE_LOWER);
 
         return isset($headers['x-api-version']) && is_string($api_version = $headers['x-api-version']) ? $api_version : self::VERSION;

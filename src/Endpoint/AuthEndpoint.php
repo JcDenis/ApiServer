@@ -14,8 +14,11 @@ namespace Dotclear\Plugin\ApiServer\Endpoint;
 class AuthEndpoint extends UserEndpoint
 {
     public const ID     = 'auth';
+
     public const RATE   = 0;
+
     public const CACHE  = false;
+
     public const FIELDS = [
         'username' => true,
         'password' => true,

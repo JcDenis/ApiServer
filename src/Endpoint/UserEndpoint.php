@@ -21,6 +21,7 @@ use Dotclear\Plugin\ApiServer\My;
 class UserEndpoint extends ApiServerEndpoint
 {
     public const ID    = 'user';
+
     public const CACHE = false;
 
     protected function callEndpoint(): void

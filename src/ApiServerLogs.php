@@ -76,6 +76,7 @@ class ApiServerLogs
         if ($record->isEmpty()) {
             return;
         }
+
         $ids = [];
         while ($record->fetch()) {
             $log_id = is_numeric($log_id = $record->f('log_id')) ? (int) $log_id : 0;
@@ -83,6 +84,7 @@ class ApiServerLogs
                 $ids[] = $log_id;
             }
         }
+
         App::log()->delLogs($ids);
         self::$record = null;
     }
@@ -111,6 +113,7 @@ class ApiServerLogs
         if (!isset($logs[$endpoint]) || !is_int($logs[$endpoint])) {
             $logs[$endpoint] = 0;
         }
+
         $logs[$endpoint] += 1;
 
         $cur = App::log()->openLogCursor();

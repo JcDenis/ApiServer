@@ -18,6 +18,7 @@ use Dotclear\Plugin\ApiServer\ApiServerResponse;
 class CodesEndpoint extends ApiServerEndpoint
 {
     public const ID     = 'codes';
+
     public const FIELDS = [
         'code' => false,
     ];

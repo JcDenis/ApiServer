@@ -41,7 +41,8 @@ class ApiServerRate extends ApiServerLifetime
      */
     public function __construct(string $user, int $cost = 0)
     {
-        $this->limit = $this->remain = self::getDefaultCallsLimit();
+        $this->limit = self::getDefaultCallsLimit();
+        $this->remain = $this->limit;
         $this->reset = self::getEndTime();
 
         if ($user === '') {
@@ -77,15 +78,19 @@ class ApiServerRate extends ApiServerLifetime
             if (isset($rate['limit']) && is_numeric($rate['limit'])) {
                 $this->limit = abs((int) $rate['limit']);
             }
+
             if (isset($rate['remain']) && is_numeric($rate['remain'])) {
                 $this->remain = abs((int) $rate['remain']);
             }
+
             if (isset($rate['reset']) && is_numeric($rate['reset'])) {
                 $this->reset = abs((int) $rate['reset']);
             }
+
             if ($this->remain > $this->limit) {
                 $this->remain = $this->limit;
             }
+
             if ($this->reset < self::getStartTime()) {
                 $this->reset  = self::getEndTime();
                 $this->remain = $this->limit;
@@ -152,6 +157,7 @@ class ApiServerRate extends ApiServerLifetime
             header('X-RateLimit-Remaining: ' . $this->getRemain());
             header('X-RateLimit-Reset: ' . self::formatTime($this->getReset()));
         }
+
         if ($this->getRemain() < 1) {
             header('Retry-After: ' . ($this->getReset() - self::getStartTime()));
         }

@@ -48,6 +48,7 @@ class ApiServerCache extends ApiServerLifetime
         if (is_bool($enable)) {
             $this->use_cache = $enable;
         }
+
         $path = static::getRoot();
 
         return $this->use_cache && static::getLifeTime() > 0 && $path !== '' && is_dir($path) && is_writable($path);
@@ -131,6 +132,7 @@ class ApiServerCache extends ApiServerLifetime
         if (!$this->useCache()) {
             return true;
         }
+
         if (!file_exists($file)) {
             return true;
         }

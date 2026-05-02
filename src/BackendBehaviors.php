@@ -72,6 +72,7 @@ class BackendBehaviors
         if (!$rs instanceof MetaRecord) {
             return;
         }
+
         $res = $rs->option(My::id());
 
         $limit = is_array($res) && isset($res['limit']) && is_numeric($limit = $res['limit']) ? abs((int) $limit) : 0;
@@ -256,8 +257,8 @@ class BackendBehaviors
     {
         try {
             My::prefs()->put('dashboard_statistics', !empty($_POST[My::id() . 'dashboard_statistics']), App::userWorkspace()::WS_BOOL);
-        } catch (Exception $e) {
-            App::error()->add($e->getMessage());
+        } catch (Exception $exception) {
+            App::error()->add($exception->getMessage());
         }
 
         return '';
@@ -291,6 +292,7 @@ class BackendBehaviors
             if ($lines === []) {
                 $lines[] = (new Li())->text(__('No statistics'));
             }
+
             $res = (new Div(My::id() . 'statistics'))
                 ->class(['box', 'small'])
                 ->items([

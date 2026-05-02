@@ -30,6 +30,7 @@ class ApiServerException extends Exception
             $code = 100;
             $head = 400;
         }
+
         if ($message === '') {
             $message = $codes[$code] ?? '';
             $head    = 200;

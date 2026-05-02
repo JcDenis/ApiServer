@@ -20,6 +20,7 @@ use Dotclear\Plugin\ApiServer\ApiServerLifetime;
 class BlogEndpoint extends ApiServerEndpoint
 {
     public const ID   = 'blog';
+
     public const AUTH = false;
 
     protected function callEndpoint(): void

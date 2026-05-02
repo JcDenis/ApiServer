@@ -148,6 +148,7 @@ class ApiServerEndpoint
             if (App::auth()->checkUser($username, null, null, false) === true) {
                 return;
             }
+
             // Check user perms
         } elseif (App::auth()->checkUser($username, $password, null, false) === true
          && App::auth()->check(My::id(), App::blog()->id())                 === true
