@@ -25,19 +25,14 @@ $this->registerModule(
             ['core', '2.36'],
         ],
         'settings' => [
-            // @phpstan-ignore binaryOp.invalid
             'blog' => '#params.' . $this->id . '_params',
-            // @phpstan-ignore binaryOp.invalid
             'pref' => '#user-favorites.' . $this->id . '_prefs',
         ],
         'permissions' => 'My',
         'type'        => 'plugin',
-        // @phpstan-ignore binaryOp.invalid
-        'support' => 'https://github.com/JcDenis/' . $this->id . '/issues',
-        // @phpstan-ignore binaryOp.invalid
-        'details' => 'https://github.com/JcDenis/' . $this->id . '/src/branch/master/README.md',
-        // @phpstan-ignore binaryOp.invalid
-        'repository' => 'https://raw.githubusercontent.com/JcDenis/' . $this->id . '/master/dcstore.xml',
-        'date'       => '2026-04-24T18:52:00+00:00',
+        'support'     => 'https://github.com/JcDenis/' . $this->id . '/issues',
+        'details'     => 'https://github.com/JcDenis/' . $this->id . '/src/branch/master/README.md',
+        'repository'  => 'https://raw.githubusercontent.com/JcDenis/' . $this->id . '/master/dcstore.xml',
+        'date'        => '2026-04-24T18:52:00+00:00',
     ]
 );
