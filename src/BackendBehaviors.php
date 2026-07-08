@@ -240,7 +240,7 @@ class BackendBehaviors
         ->legend(new Legend((new Img(My::icons()[0]))->class('icon-small')->render() . ' ' . My::name()))
         ->fields([
             (new Para())->items([
-                (new Checkbox(My::id() . 'dashboard_statistics', (bool) My::prefs()->dashboard_statistics))
+                (new Checkbox(My::id() . 'dashboard_statistics', My::prefs()->getBool('dashboard_statistics', false)))
                     ->value(1)
                     ->label((new Label(__('Display API server statistics on dashboard'), Label::INSIDE_TEXT_AFTER))),
             ]),
@@ -271,7 +271,7 @@ class BackendBehaviors
      */
     public static function adminDashboardContentsV2(ArrayObject $contents): string
     {
-        if (My::prefs()->dashboard_statistics) {
+        if (My::prefs()->getBool('dashboard_statistics')) {
             if (!empty($_POST[My::id() . 'dellogs'])) {
                 ApiServerLogs::delLogs();
             }
