@@ -41,9 +41,9 @@ class ApiServerRate extends ApiServerLifetime
      */
     public function __construct(string $user, int $cost = 0)
     {
-        $this->limit = self::getDefaultCallsLimit();
+        $this->limit  = self::getDefaultCallsLimit();
         $this->remain = $this->limit;
-        $this->reset = self::getEndTime();
+        $this->reset  = self::getEndTime();
 
         if ($user === '') {
             // Get anonymous rate limit
@@ -58,8 +58,8 @@ class ApiServerRate extends ApiServerLifetime
                 'limit'     => 1,
             ]);
             if (!$rs->isEmpty()) {
-                $log_dt  = is_string($log_dt = $rs->f('log_dt')) ? $log_dt : '';
-                $log_msg = is_numeric($log_msg = $rs->f('log_msg')) ? (int) $log_msg : 0;
+                $log_dt  = $rs->strField('log_dt');
+                $log_msg = $rs->intField('log_msg');
 
                 $dt    = DateTime::createFromFormat('Y-m-d H:i:s', $log_dt, new DateTimeZone('UTC'));
                 $reset = $dt instanceof DateTime ? (int) $dt->format('U') : time();
@@ -114,7 +114,7 @@ class ApiServerRate extends ApiServerLifetime
             if ($user === '') {
                 // Clean old logs
                 while (App::log()->getLogs(['log_table' => My::id() . 'rate'])->fetch()) {
-                    $log_id = is_numeric($log_id = $rs->f('log_id')) ? (int) $log_id : 0;
+                    $log_id = $rs->intField('log_id');
                     if ($log_id !== 0) {
                         App::log()->delLog($log_id);
                     }

@@ -117,7 +117,7 @@ class BackendBehaviors
         ];
 
         if (!$rs->isEmpty()) {
-            $log_msg  = is_numeric($log_msg = $rs->f('log_msg')) ? (int) $log_msg : 0;
+            $log_msg  = $rs->intField('log_msg');
             $fields[] = (new Para())
                 ->items([
                     (new Checkbox(My::id() . 'reset', false))
@@ -204,7 +204,7 @@ class BackendBehaviors
         if (!empty($_POST[My::id() . 'reset'])) {
             $rs = App::log()->getLogs(['log_table' => My::id() . 'rate']);
             while ($rs->fetch()) {
-                $log_id = is_numeric($log_id = $rs->f('log_id')) ? (int) $log_id : 0;
+                $log_id = $rs->intField('log_id');
                 if ($log_id !== 0) {
                     App::log()->delLog($log_id);
                 }

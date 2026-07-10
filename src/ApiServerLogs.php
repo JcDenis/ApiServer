@@ -39,7 +39,11 @@ class ApiServerLogs
         $record = self::getLogs();
 
         $user_tz = is_string($user_tz = App::auth()->getInfo('user_tz')) ? $user_tz : 'UTC';
-        $log_dt  = !$record->isEmpty() && is_string($log_dt = $record->f('log_dt')) ? $log_dt : 'now';
+        if ($record->isEmpty()) {
+            $log_dt = 'now';
+        } else {
+            $log_dt = $record->strField('log_dt') ?: 'now';
+        }
 
         return Date::dt2str(__('%Y-%m-%d %H:%M'), $log_dt, $user_tz);
     }
@@ -58,7 +62,14 @@ class ApiServerLogs
          */
         $logs = [];
 
-        $log_msg = !$record->isEmpty() && is_string($log_msg = $record->f('log_msg')) ? json_decode($log_msg, true) : [];
+        $log_msg = [];
+        if (!$record->isEmpty()) {
+            $msg = $record->strField('log_msg');
+            if ($msg !== '') {
+                $log_msg = json_decode($msg, true);
+            }
+        }
+
         if (is_array($log_msg) && $log_msg !== []) {
             arsort($log_msg);
             $logs = array_filter($log_msg, fn ($value, $key): bool => is_string($key) && is_int($value), ARRAY_FILTER_USE_BOTH);
@@ -79,7 +90,7 @@ class ApiServerLogs
 
         $ids = [];
         while ($record->fetch()) {
-            $log_id = is_numeric($log_id = $record->f('log_id')) ? (int) $log_id : 0;
+            $log_id = $record->intField('log_id');
             if ($log_id !== 0) {
                 $ids[] = $log_id;
             }
@@ -98,15 +109,12 @@ class ApiServerLogs
     {
         $record = self::getLogs();
 
-        $time = !$record->isEmpty() && is_string($log_dt = $record->f('log_dt')) ? (int) strtotime($log_dt) : time();
-        $logs = !$record->isEmpty() && is_string($log_msg = $record->f('log_msg')) ? json_decode($log_msg, true) : [];
+        $time = $record->isEmpty() ? time() : (int) strtotime($record->strField('log_dt'));
+        $logs = $record->isEmpty() ? [] : json_decode($record->strField('log_msg'), true);
 
         if (!is_array($logs)) {
             $logs = [];
         }
-
-        //$time   = $record->isEmpty() ? time() : (int) strtotime($log_dt);
-        //$logs   = $record->isEmpty() ? [] : json_decode($record->f('log_msg'), true);
 
         self::delLogs();
 

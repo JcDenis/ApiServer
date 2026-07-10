@@ -19,13 +19,13 @@ use Dotclear\Plugin\ApiServer\ApiServerLifetime;
  */
 class BlogEndpoint extends ApiServerEndpoint
 {
-    public const ID   = 'blog';
+    public const ID = 'blog';
 
     public const AUTH = false;
 
     protected function callEndpoint(): void
     {
-        $nb_posts = is_numeric($nb_posts = App::blog()->getPosts([], true)->f(0)) ? (int) $nb_posts : 0;
+        $nb_posts = App::blog()->getPosts([], true)->cardinal();
 
         $this->setContent([
             'name'        => App::blog()->name(),
