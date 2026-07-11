@@ -1,3 +1,7 @@
+ApiServer 0.9 - xxxx.xx.xx
+===========================================================
+* Bump Dotclear from 2.36 to 2.39 (metarecord methods)
+
 ApiServer 0.8 - 2025.09.08
 ===========================================================
 * Bump Dotclear from 2.34 to 2.36
