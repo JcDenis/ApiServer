@@ -14,6 +14,10 @@
  */
 declare(strict_types=1);
 
+if (!is_object($this) || !method_exists($this, 'registerModule') || !isset($this->id) || !is_string($this->id)) {
+    return;
+}
+
 $this->registerModule(
     'Dotclear public API',
     'Serv your blog through API',
