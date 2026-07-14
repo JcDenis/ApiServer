@@ -115,8 +115,8 @@ class ApiServerToken extends ApiServerLifetime
     {
         if (defined('APISERVER_DEFAULT_TOKEN_LIFETIME')) {
             $lifetime = is_numeric($lifetime = constant('APISERVER_DEFAULT_TOKEN_LIFETIME')) ? (int) $lifetime : 3600;
-        } elseif (is_numeric(My::settings()->get('token_lifetime'))) {
-            $lifetime = (int) My::settings()->get('token_lifetime');
+        } elseif (My::settings()->getInt('token_lifetime', false) > 0) {
+            $lifetime = My::settings()->getInt('token_lifetime', false);
         } else {
             $lifetime = 3600;
         }

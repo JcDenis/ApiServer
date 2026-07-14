@@ -80,7 +80,7 @@ class ApiServer
             $this->version  = $this->getVersionFromHeaders();
 
             // Check API activation
-            if (!My::settings()->get('active')) {
+            if (!My::settings()->getBool('active', false)) {
                 throw new ApiServerException(101);
             }
 

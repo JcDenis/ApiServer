@@ -14,7 +14,7 @@
  */
 declare(strict_types=1);
 
-if (!is_object($this) || !method_exists($this, 'registerModule') || !isset($this->id) || !is_string($this->id)) {
+if (!isset($this) || !is_object($this) || !method_exists($this, 'registerModule') || !isset($this->id) || !is_string($this->id)) {
     return;
 }
 

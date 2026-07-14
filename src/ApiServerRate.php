@@ -213,8 +213,8 @@ class ApiServerRate extends ApiServerLifetime
     {
         if (defined('APISERVER_DEFAULT_RATE_LIFETIME')) {
             $lifetime = is_numeric($lifetime = constant('APISERVER_DEFAULT_RATE_LIFETIME')) ? (int) $lifetime : 3600;
-        } elseif (is_numeric(My::settings()->get('rate_lifetime'))) {
-            $lifetime = (int) My::settings()->get('rate_lifetime');
+        } elseif (My::settings()->getInt('rate_lifetime', false) > 0) {
+            $lifetime = My::settings()->getInt('rate_lifetime', false);
         } else {
             $lifetime = 3600;
         }

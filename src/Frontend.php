@@ -33,7 +33,7 @@ class Frontend
         App::behavior()->addBehaviors([
             // Add API user permission on new user registration from frontend
             'FrontendSessionAfterSignup' => function (Cursor $cur): void {
-                if (My::settings()->get('signup_perm')) {
+                if (My::settings()->getBool('signup_perm', false)) {
                     $user_id = is_string($user_id = $cur->user_id) ? $user_id : '';
                     if ($user_id !== '') {
                         $perms           = App::users()->getUserPermissions($user_id);
