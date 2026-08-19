@@ -93,8 +93,8 @@ class ApiServerEndpoint
     public function __construct(
         protected ApiServer $api
     ) {
-        $this->checkEndpoint();
         $this->checkUser();
+        $this->checkEndpoint();
         $this->checkRate();
         $this->checkCache();
         $this->callEndpoint();
