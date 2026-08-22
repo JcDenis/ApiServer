@@ -24,9 +24,7 @@ class ApiServerLogs
      */
     public static function getLogs(): MetaRecord
     {
-        if (is_null(self::$record)) {
-            self::$record = App::log()->getLogs(['log_table' => My::id(), 'limit' => 1]);
-        }
+        self::$record ??= App::log()->getLogs(['log_table' => My::id(), 'limit' => 1]);
 
         return self::$record;
     }
