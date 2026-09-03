@@ -27,8 +27,8 @@ use UnexpectedValueException;
  */
 class JWT
 {
-    private const ASN1_INTEGER = 0x02;
-    private const ASN1_SEQUENCE = 0x10;
+    private const ASN1_INTEGER    = 0x02;
+    private const ASN1_SEQUENCE   = 0x10;
     private const ASN1_BIT_STRING = 0x03;
 
     /**
@@ -53,16 +53,16 @@ class JWT
      * @var array<string, string[]>
      */
     public static $supported_algs = [
-        'ES384' => ['openssl', 'SHA384'],
-        'ES256' => ['openssl', 'SHA256'],
+        'ES384'  => ['openssl', 'SHA384'],
+        'ES256'  => ['openssl', 'SHA256'],
         'ES256K' => ['openssl', 'SHA256'],
-        'HS256' => ['hash_hmac', 'SHA256'],
-        'HS384' => ['hash_hmac', 'SHA384'],
-        'HS512' => ['hash_hmac', 'SHA512'],
-        'RS256' => ['openssl', 'SHA256'],
-        'RS384' => ['openssl', 'SHA384'],
-        'RS512' => ['openssl', 'SHA512'],
-        'EdDSA' => ['sodium_crypto', 'EdDSA'],
+        'HS256'  => ['hash_hmac', 'SHA256'],
+        'HS384'  => ['hash_hmac', 'SHA384'],
+        'HS512'  => ['hash_hmac', 'SHA512'],
+        'RS256'  => ['openssl', 'SHA256'],
+        'RS384'  => ['openssl', 'SHA384'],
+        'RS512'  => ['openssl', 'SHA512'],
+        'EdDSA'  => ['sodium_crypto', 'EdDSA'],
     ];
 
     /**
@@ -108,8 +108,8 @@ class JWT
         if (\count($tks) !== 3) {
             throw new UnexpectedValueException('Wrong number of segments');
         }
-        list($headb64, $bodyb64, $cryptob64) = $tks;
-        $headerRaw = static::urlsafeB64Decode($headb64);
+        [$headb64, $bodyb64, $cryptob64] = $tks;
+        $headerRaw                       = static::urlsafeB64Decode($headb64);
         if (null === ($header = static::jsonDecode($headerRaw))) {
             throw new UnexpectedValueException('Invalid header encoding');
         }
@@ -157,6 +157,7 @@ class JWT
                 'Cannot handle token with nbf prior to ' . \date(DateTime::ISO8601, (int) $payload->nbf)
             );
             $ex->setPayload($payload);
+
             throw $ex;
         }
 
@@ -168,6 +169,7 @@ class JWT
                 'Cannot handle token with iat prior to ' . \date(DateTime::ISO8601, (int) $payload->iat)
             );
             $ex->setPayload($payload);
+
             throw $ex;
         }
 
@@ -175,6 +177,7 @@ class JWT
         if (isset($payload->exp) && ($timestamp - static::$leeway) >= $payload->exp) {
             $ex = new ExpiredException('Expired token');
             $ex->setPayload($payload);
+
             throw $ex;
         }
 
@@ -211,12 +214,12 @@ class JWT
         if ($keyId !== null) {
             $header['kid'] = $keyId;
         }
-        $segments = [];
-        $segments[] = static::urlsafeB64Encode((string) static::jsonEncode($header));
-        $segments[] = static::urlsafeB64Encode((string) static::jsonEncode($payload));
+        $segments      = [];
+        $segments[]    = static::urlsafeB64Encode((string) static::jsonEncode($header));
+        $segments[]    = static::urlsafeB64Encode((string) static::jsonEncode($payload));
         $signing_input = \implode('.', $segments);
 
-        $signature = static::sign($signing_input, $key, $alg);
+        $signature  = static::sign($signing_input, $key, $alg);
         $segments[] = static::urlsafeB64Encode($signature);
 
         return \implode('.', $segments);
@@ -242,19 +245,20 @@ class JWT
         if (empty(static::$supported_algs[$alg])) {
             throw new DomainException('Algorithm not supported');
         }
-        list($function, $algorithm) = static::$supported_algs[$alg];
+        [$function, $algorithm] = static::$supported_algs[$alg];
         switch ($function) {
             case 'hash_hmac':
                 if (!\is_string($key)) {
                     throw new InvalidArgumentException('key must be a string when using hmac');
                 }
+
                 return \hash_hmac($algorithm, $msg, $key, true);
             case 'openssl':
                 $signature = '';
                 if (!\is_resource($key) && !openssl_pkey_get_private($key)) {
                     throw new DomainException('OpenSSL unable to validate key');
                 }
-                $success = \openssl_sign($msg, $signature, $key, $algorithm); // @phpstan-ignore-line
+                $success = \openssl_sign($msg, $signature, $key, $algorithm);
                 if (!$success) {
                     throw new DomainException('OpenSSL unable to sign data');
                 }
@@ -263,6 +267,7 @@ class JWT
                 } elseif ($alg === 'ES384') {
                     $signature = self::signatureFromDER($signature, 384);
                 }
+
                 return $signature;
             case 'sodium_crypto':
                 if (!\function_exists('sodium_crypto_sign_detached')) {
@@ -271,13 +276,15 @@ class JWT
                 if (!\is_string($key)) {
                     throw new InvalidArgumentException('key must be a string when using EdDSA');
                 }
+
                 try {
                     // The last non-empty line is used as the key.
                     $lines = array_filter(explode("\n", $key));
-                    $key = base64_decode((string) end($lines));
+                    $key   = base64_decode((string) end($lines));
                     if (\strlen($key) === 0) {
                         throw new DomainException('Key cannot be empty string');
                     }
+
                     return sodium_crypto_sign_detached($msg, $key);
                 } catch (Exception $e) {
                     throw new DomainException($e->getMessage(), 0, $e);
@@ -310,16 +317,17 @@ class JWT
             throw new DomainException('Algorithm not supported');
         }
 
-        list($function, $algorithm) = static::$supported_algs[$alg];
+        [$function, $algorithm] = static::$supported_algs[$alg];
         switch ($function) {
             case 'openssl':
-                $success = \openssl_verify($msg, $signature, $keyMaterial, $algorithm); // @phpstan-ignore-line
+                $success = \openssl_verify($msg, $signature, $keyMaterial, $algorithm);
                 if ($success === 1) {
                     return true;
                 }
                 if ($success === 0) {
                     return false;
                 }
+
                 // returns 1 on success, 0 on failure, -1 on error.
                 throw new DomainException(
                     'OpenSSL error: ' . \openssl_error_string()
@@ -331,16 +339,18 @@ class JWT
                 if (!\is_string($keyMaterial)) {
                     throw new InvalidArgumentException('key must be a string when using EdDSA');
                 }
+
                 try {
                     // The last non-empty line is used as the key.
                     $lines = array_filter(explode("\n", $keyMaterial));
-                    $key = base64_decode((string) end($lines));
+                    $key   = base64_decode((string) end($lines));
                     if (\strlen($key) === 0) {
                         throw new DomainException('Key cannot be empty string');
                     }
                     if (\strlen($signature) === 0) {
                         throw new DomainException('Signature cannot be empty string');
                     }
+
                     return sodium_crypto_sign_verify_detached($signature, $msg, $key);
                 } catch (Exception $e) {
                     throw new DomainException($e->getMessage(), 0, $e);
@@ -351,6 +361,7 @@ class JWT
                     throw new InvalidArgumentException('key must be a string when using hmac');
                 }
                 $hash = \hash_hmac($algorithm, $msg, $keyMaterial, true);
+
                 return self::constantTimeEquals($hash, $signature);
         }
     }
@@ -373,6 +384,7 @@ class JWT
         } elseif ($obj === null && $input !== 'null') {
             throw new DomainException('Null result with non-null input');
         }
+
         return $obj;
     }
 
@@ -396,6 +408,7 @@ class JWT
         if ($json === false) {
             throw new DomainException('Provided object could not be encoded to valid JSON');
         }
+
         return $json;
     }
 
@@ -430,6 +443,7 @@ class JWT
             $padlen = 4 - $remainder;
             $input .= \str_repeat('=', $padlen);
         }
+
         return \strtr($input, '-_', '+/');
     }
 
@@ -444,7 +458,6 @@ class JWT
     {
         return \str_replace('=', '', \strtr(\base64_encode($input), '+/', '-_'));
     }
-
 
     /**
      * Determine if an algorithm has been provided for each Key
@@ -513,16 +526,16 @@ class JWT
     private static function handleJsonError(int $errno): void
     {
         $messages = [
-            JSON_ERROR_DEPTH => 'Maximum stack depth exceeded',
+            JSON_ERROR_DEPTH          => 'Maximum stack depth exceeded',
             JSON_ERROR_STATE_MISMATCH => 'Invalid or malformed JSON',
-            JSON_ERROR_CTRL_CHAR => 'Unexpected control character found',
-            JSON_ERROR_SYNTAX => 'Syntax error, malformed JSON',
-            JSON_ERROR_UTF8 => 'Malformed UTF-8 characters' //PHP >= 5.3.3
+            JSON_ERROR_CTRL_CHAR      => 'Unexpected control character found',
+            JSON_ERROR_SYNTAX         => 'Syntax error, malformed JSON',
+            JSON_ERROR_UTF8           => 'Malformed UTF-8 characters', //PHP >= 5.3.3
         ];
+
         throw new DomainException(
-            isset($messages[$errno])
-            ? $messages[$errno]
-            : 'Unknown JSON error: ' . $errno
+            $messages[$errno]
+            ?? 'Unknown JSON error: ' . $errno
         );
     }
 
@@ -538,6 +551,7 @@ class JWT
         if (\function_exists('mb_strlen')) {
             return \mb_strlen($str, '8bit');
         }
+
         return \strlen($str);
     }
 
@@ -550,8 +564,8 @@ class JWT
     private static function signatureToDER(string $sig): string
     {
         // Separate the signature into r-value and s-value
-        $length = max(1, (int) (\strlen($sig) / 2));
-        list($r, $s) = \str_split($sig, $length);
+        $length  = max(1, (int) (\strlen($sig) / 2));
+        [$r, $s] = \str_split($sig, $length);
 
         // Trim leading zeros
         $r = \ltrim($r, "\x00");
@@ -608,9 +622,9 @@ class JWT
     private static function signatureFromDER(string $der, int $keySize): string
     {
         // OpenSSL returns the ECDSA signatures as a binary ASN.1 DER SEQUENCE
-        list($offset, $_) = self::readDER($der);
-        list($offset, $r) = self::readDER($der, $offset);
-        list($offset, $s) = self::readDER($der, $offset);
+        [$offset, $_] = self::readDER($der);
+        [$offset, $r] = self::readDER($der, $offset);
+        [$offset, $s] = self::readDER($der, $offset);
 
         // Convert r-value and s-value from signed two's compliment to unsigned
         // big-endian integers
@@ -635,15 +649,15 @@ class JWT
      */
     private static function readDER(string $der, int $offset = 0): array
     {
-        $pos = $offset;
-        $size = \strlen($der);
+        $pos         = $offset;
+        $size        = \strlen($der);
         $constructed = (\ord($der[$pos]) >> 5) & 0x01;
-        $type = \ord($der[$pos++]) & 0x1f;
+        $type        = \ord($der[$pos++])      & 0x1f;
 
         // Length
         $len = \ord($der[$pos++]);
         if ($len & 0x80) {
-            $n = $len & 0x1f;
+            $n   = $len & 0x1f;
             $len = 0;
             while ($n-- && $pos < $size) {
                 $len = ($len << 8) | \ord($der[$pos++]);
