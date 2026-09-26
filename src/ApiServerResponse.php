@@ -34,15 +34,9 @@ class ApiServerResponse
      */
     public function encode(): string
     {
-        $message = $this->message;
-        if ($message === '') {
-            $codes   = ApiServerException::codes();
-            $message = isset($codes[$this->code]) ? $message : '';
-        }
-
         return (string) json_encode([
             'code'    => $this->code,
-            'message' => $message,
+            'message' => $this->message,
             'content' => $this->content,
             'cache'   => $this->cache ? '1' : '0',
         ]);
