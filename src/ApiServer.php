@@ -112,7 +112,7 @@ class ApiServer
                 }
 
                 if (!empty($_POST[$field]) && (is_int($_POST[$field]) || is_string($_POST[$field]))) {
-                    $this->post[(string) $field] = (string) $_POST[$field];
+                    $this->post[$field] = (string) $_POST[$field];
                 }
             }
 
@@ -160,9 +160,9 @@ class ApiServer
         foreach ($endpoints as $endpoint) {
             if (is_subclass_of($endpoint, ApiServerEndpoint::class)
                 && in_array($this->version, $endpoint::VERSIONS)
-                && !isset($this->endpoints[(string) $endpoint::ID])
+                && !isset($this->endpoints[$endpoint::ID])
             ) {
-                $this->endpoints[(string) $endpoint::ID] = $endpoint;
+                $this->endpoints[$endpoint::ID] = $endpoint;
             }
         }
     }
