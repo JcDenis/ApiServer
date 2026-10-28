@@ -159,7 +159,7 @@ class ApiServer
 
         foreach ($endpoints as $endpoint) {
             if (is_subclass_of($endpoint, ApiServerEndpoint::class)
-                && in_array($this->version, $endpoint::VERSIONS)
+                && in_array($this->version, $endpoint::VERSIONS, true)
                 && !isset($this->endpoints[$endpoint::ID])
             ) {
                 $this->endpoints[$endpoint::ID] = $endpoint;
