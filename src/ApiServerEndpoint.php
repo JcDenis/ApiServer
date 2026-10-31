@@ -155,7 +155,7 @@ class ApiServerEndpoint
          && !App::status()->user()->isRestricted($_Int(App::auth()->getInfo('user_status')))
          && !App::auth()->mustChangePassword()
         ) {
-            $this->token = ApiServerToken::newFromUser((string) App::auth()->userID());
+            $this->token = ApiServerToken::newFromUser(App::auth()->userID());
 
             return;
         }

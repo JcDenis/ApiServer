@@ -20,7 +20,7 @@ use Dotclear\Plugin\ApiServer\My;
  */
 class UserEndpoint extends ApiServerEndpoint
 {
-    public const ID    = 'user';
+    public const ID = 'user';
 
     public const CACHE = false;
 
@@ -28,7 +28,7 @@ class UserEndpoint extends ApiServerEndpoint
     {
         $user_cn = is_string($user_cn = App::auth()->getInfo('user_cn')) ? $user_cn : '';
         if ($user_cn === '') {
-            $user_cn = App::auth()->userID() ?? '';
+            $user_cn = App::auth()->userID();
         }
 
         $content = [
