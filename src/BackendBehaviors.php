@@ -271,7 +271,7 @@ class BackendBehaviors
      */
     public static function adminDashboardContentsV2(ArrayObject $contents): string
     {
-        if (My::prefs()->getBool('dashboard_statistics')) {
+        if (My::prefs()->getBool('dashboard_statistics', false)) {
             if (!empty($_POST[My::id() . 'dellogs'])) {
                 ApiServerLogs::delLogs();
             }
