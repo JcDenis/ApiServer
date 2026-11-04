@@ -8,6 +8,7 @@ use ArrayObject;
 use DateTime;
 use DateTimeZone;
 use Dotclear\App;
+use Dotclear\Schema\Extension\User;
 
 /**
  * @brief       ApiServer core rate limit.
@@ -69,8 +70,8 @@ class ApiServerRate extends ApiServerLifetime
             }
         } else {
             // Get authenticate rate limit
-            $rate    = App::auth()->getOption(My::id());
-            $options = App::auth()->getOptions();
+            $options = User::options(App::users()->getUser($user));
+            $rate    = $options[My::id()] ?? null;
         }
 
         // Parse user values
