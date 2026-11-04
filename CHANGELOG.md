@@ -1,3 +1,8 @@
+ApiServer 0.12 - 2026.11.05
+===========================================================
+* Fix deprecated user options
+* Code review (PHPStan strict rules)
+
 ApiServer 0.11 - 2026.08.12
 ===========================================================
 * Bump Dotclear from 2.36 to 2.39 (metarecord methods)
