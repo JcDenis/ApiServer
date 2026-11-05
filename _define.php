@@ -26,7 +26,7 @@ $this->registerModule(
     [
         'requires' => [
             ['php', '8.3'],
-            ['core', '2.39'],
+            ['core', '2.40'],
         ],
         'settings' => [
             'blog' => '#params.' . $this->id . '_params',
