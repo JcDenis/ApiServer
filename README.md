@@ -39,6 +39,7 @@ This plugin does not serv usefull API endpoint by itself, you must use other lin
 
 * Jean-Christian Denis (author)
 * Franck Paul
+* Claude (AI assistant by Anthropic)
 
 You are welcome to contribute to this code.
 
