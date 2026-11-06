@@ -1,3 +1,9 @@
+ApiServer 0.13 - 2026.11.07
+===========================================================
+* App::auth()->userID() returns only string since 2.40
+* Add Claude to contributors
+* Move users rate limits from user options to user preferences
+
 ApiServer 0.12 - 2026.11.05
 ===========================================================
 * Fix deprecated user options

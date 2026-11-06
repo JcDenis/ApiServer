@@ -22,7 +22,7 @@ $this->registerModule(
     'Dotclear public API',
     'Serv your blog through API',
     'Jean-Christian Paul Denis',
-    '0.12',
+    '0.13',
     [
         'requires' => [
             ['php', '8.3'],
