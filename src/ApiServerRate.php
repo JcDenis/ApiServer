@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\ApiServer;
 
-use ArrayObject;
 use DateTime;
 use DateTimeZone;
 use Dotclear\App;
-use Dotclear\Schema\Extension\User;
 
 /**
  * @brief       ApiServer core rate limit.
@@ -19,6 +17,13 @@ use Dotclear\Schema\Extension\User;
  */
 class ApiServerRate extends ApiServerLifetime
 {
+    /**
+     * User preference ID of rate limit values.
+     *
+     * @var     string  PREF_ID
+     */
+    public const PREF_ID = 'rate';
+
     /**
      * User current API calls limit.
      */
@@ -70,8 +75,7 @@ class ApiServerRate extends ApiServerLifetime
             }
         } else {
             // Get authenticate rate limit
-            $options = User::options(App::users()->getUser($user));
-            $rate    = $options[My::id()] ?? null;
+            $rate = self::getUserRate($user);
         }
 
         // Parse user values
@@ -129,17 +133,8 @@ class ApiServerRate extends ApiServerLifetime
 
                 App::log()->addLog($cur);
             } else {
-                $options[My::id()] = [
-                    'limit'  => $this->limit,
-                    'remain' => $this->remain,
-                    'reset'  => $this->reset,
-                ];
-
                 // Set authenticate rate limit
-                $cur               = App::auth()->openUserCursor();
-                $cur->user_options = new ArrayObject($options);
-
-                App::auth()->sudo(App::users()->updUser(...), $user, $cur);
+                self::setUserRate($user, $this->limit, $this->remain, $this->reset);
             }
         }
     }
@@ -194,6 +189,55 @@ class ApiServerRate extends ApiServerLifetime
     public function getResetDate(): string
     {
         return self::formatTime($this->getReset());
+    }
+
+    /**
+     * Get user rate limit values from user preferences.
+     *
+     * @param   string  $user   The user ID
+     *
+     * @return  null|array<array-key, mixed>
+     */
+    public static function getUserRate(string $user): ?array
+    {
+        $rate = App::userPreferences()->createFromUser($user, My::id())->get(My::id())->get(self::PREF_ID);
+
+        return is_array($rate) ? $rate : null;
+    }
+
+    /**
+     * Get user calls limit from user preferences.
+     *
+     * @param   string  $user   The user ID
+     */
+    public static function getUserCallsLimit(string $user): int
+    {
+        $rate  = self::getUserRate($user);
+        $limit = is_array($rate) && isset($rate['limit']) && is_numeric($rate['limit']) ? abs((int) $rate['limit']) : 0;
+
+        return $limit === 0 ? self::getDefaultCallsLimit() : $limit;
+    }
+
+    /**
+     * Set user rate limit values in user preferences.
+     *
+     * @param   string  $user       The user ID
+     * @param   int     $limit      The calls limit
+     * @param   int     $remain     The remaining calls
+     * @param   int     $reset      The reset timestamp
+     */
+    public static function setUserRate(string $user, int $limit, int $remain, int $reset): void
+    {
+        App::userPreferences()->createFromUser($user, My::id())->get(My::id())->put(
+            self::PREF_ID,
+            [
+                'limit'  => $limit,
+                'remain' => $remain,
+                'reset'  => $reset,
+            ],
+            App::userWorkspace()::WS_ARRAY,
+            'API calls rate limit'
+        );
     }
 
     /**

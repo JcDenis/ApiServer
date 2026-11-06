@@ -32,7 +32,8 @@ class Backend
         // Behaviors
         App::behavior()->addBehaviors([
             'dcMaintenanceInit'                => BackendBehaviors::dcMaintenanceInit(...),
-            'adminBeforeUserUpdate'            => BackendBehaviors::adminBeforeUserUpdate(...),
+            'adminAfterUserCreate'             => BackendBehaviors::adminAfterUserUpdate(...),
+            'adminAfterUserUpdate'             => BackendBehaviors::adminAfterUserUpdate(...),
             'adminUserForm'                    => BackendBehaviors::adminUserForm(...),
             'adminBlogPreferencesFormV2'       => BackendBehaviors::adminBlogPreferencesFormV2(...),
             'adminBeforeBlogSettingsUpdate'    => BackendBehaviors::adminBeforeBlogSettingsUpdate(...),

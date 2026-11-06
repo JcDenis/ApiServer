@@ -46,22 +46,20 @@ class BackendBehaviors
     }
 
     /**
-     * Update user API rate limit.
+     * Update user API rate limit (on user creation or update).
      */
-    public static function adminBeforeUserUpdate(Cursor $cur, string $user_id): void
+    public static function adminAfterUserUpdate(Cursor $cur, string $user_id): void
     {
-        $limit = isset($_POST[My::id() . 'rate_limit']) && is_numeric($limit = $_POST[My::id() . 'rate_limit']) ? abs((int) $limit) : 0;
+        if (!isset($_POST[My::id() . 'rate_limit'])) {
+            return;
+        }
+
+        $limit = is_numeric($limit = $_POST[My::id() . 'rate_limit']) ? abs((int) $limit) : 0;
         if ($limit === 0) {
             $limit = ApiServerRate::getDefaultCallsLimit();
         }
 
-        if (is_array($cur->user_options) || $cur->user_options instanceof ArrayObject) {
-            $cur->user_options[My::id()] = [
-                'reset'  => ApiServerRate::getEndTime(),
-                'limit'  => $limit,
-                'remain' => $limit,
-            ];
-        }
+        ApiServerRate::setUserRate($user_id, $limit, $limit, ApiServerRate::getEndTime());
     }
 
     /**
@@ -69,16 +67,8 @@ class BackendBehaviors
      */
     public static function adminUserForm(?MetaRecord $rs): void
     {
-        if (!$rs instanceof MetaRecord) {
-            return;
-        }
-
-        $res = $rs->option(My::id());
-
-        $limit = is_array($res) && isset($res['limit']) && is_numeric($limit = $res['limit']) ? abs((int) $limit) : 0;
-        if ($limit === 0) {
-            $limit = ApiServerRate::getDefaultCallsLimit();
-        }
+        $user_id = $rs instanceof MetaRecord ? $rs->strField('user_id') : '';
+        $limit   = $user_id !== '' ? ApiServerRate::getUserCallsLimit($user_id) : ApiServerRate::getDefaultCallsLimit();
 
         echo (new Div())
             ->items([
