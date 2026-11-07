@@ -38,8 +38,8 @@ class Install
             if ($current !== '' && version_compare($current, '0.13', '<')) {
                 self::moveUserOptionsToPreferences();
             }
-        } catch (Exception $e) {
-            App::error()->add($e->getMessage());
+        } catch (Exception $exception) {
+            App::error()->add($exception->getMessage());
         }
 
         return true;
@@ -73,7 +73,7 @@ class Install
             // Copy rate limit to user preferences
             $rate = $options[My::id()];
             if (is_array($rate)) {
-                $limit = isset($rate['limit'])  && is_numeric($rate['limit']) ? abs((int) $rate['limit']) : ApiServerRate::getDefaultCallsLimit();
+                $limit  = isset($rate['limit'])  && is_numeric($rate['limit']) ? abs((int) $rate['limit']) : ApiServerRate::getDefaultCallsLimit();
                 $remain = isset($rate['remain']) && is_numeric($rate['remain']) ? abs((int) $rate['remain']) : $limit;
                 $reset  = isset($rate['reset'])  && is_numeric($rate['reset']) ? abs((int) $rate['reset']) : ApiServerRate::getEndTime();
 
