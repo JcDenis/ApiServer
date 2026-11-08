@@ -118,18 +118,24 @@ class ApiServerRate extends ApiServerLifetime
 
             if ($user === '') {
                 // Clean old logs
-                while (App::log()->getLogs(['log_table' => My::id() . 'rate'])->fetch()) {
+                $logs = [];
+                $rs   = App::log()->getLogs(['log_table' => My::id() . 'rate']);
+                while ($rs->fetch()) {
                     $log_id = $rs->intField('log_id');
                     if ($log_id !== 0) {
-                        App::log()->delLog($log_id);
+                        $logs[] = $log_id;
                     }
                 }
 
-                // Set anonymous rate limit
-                $cur            = App::log()->openLogCursor();
-                $cur->log_table = My::id() . 'rate';
-                $cur->log_msg   = $this->remain;
-                $cur->log_dt    = self::formatTime($this->reset, 'Y-m-d H:i:s');
+                if ($logs !== []) {
+                    App::log()->delLogs($logs);
+                }
+
+                // Set anonymous rate limit (log message MUST be a string)
+                $cur = App::log()->openLogCursor();
+                $cur->setStrField('log_table', My::id() . 'rate');
+                $cur->setStrField('log_msg', (string) $this->remain);
+                $cur->setStrField('log_dt', self::formatTime($this->reset, 'Y-m-d H:i:s'));
 
                 App::log()->addLog($cur);
             } else {
