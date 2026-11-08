@@ -1,3 +1,8 @@
+ApiServer 0.14 - 2026.11.08
+===========================================================
+* Code formatting (Rector)
+* Fix anonymous API calls (log message must be a string since Dotclear 2.40)
+
 ApiServer 0.13 - 2026.11.07
 ===========================================================
 * App::auth()->userID() returns only string since 2.40
