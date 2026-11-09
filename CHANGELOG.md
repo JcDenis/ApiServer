@@ -1,3 +1,7 @@
+ApiServer 0.15 - 2026.11.09
+===========================================================
+* Use Dotclear 2.40 typed cursor and widget methods
+
 ApiServer 0.14 - 2026.11.08
 ===========================================================
 * Code formatting (Rector)
