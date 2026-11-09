@@ -123,9 +123,9 @@ class ApiServerLogs
         $logs[$endpoint] += 1;
 
         $cur = App::log()->openLogCursor();
-        $cur->setField('log_table', My::id());
-        $cur->setField('log_dt', date('Y-m-d H:i:s', $time));
-        $cur->setField('log_msg', json_encode($logs));
+        $cur->setStrField('log_table', My::id());
+        $cur->setStrField('log_dt', date('Y-m-d H:i:s', $time));
+        $cur->setStrField('log_msg', (string) json_encode($logs));
 
         App::log()->addLog($cur);
     }
