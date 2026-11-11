@@ -28,6 +28,16 @@ _ApiServer_ is a plugin for the open-source web publishing software called [Dotc
 
 This plugin does not serv usefull API endpoint by itself, you must use other linked plugins for that.
 
+## DEVELOPERS
+
+Endpoints are classes extending `ApiServerEndpoint`, registered with the behavior `ApiServerAddEndpoint`.
+
+An endpoint can also serve another protocol than the default API format:
+
+* `$this->api->getBody()` and `$this->api->getJson()` give the raw request body (ex: a JSON body).
+* `$this->sendRaw()` sends a raw response (no `code`, `message`, `content` envelope, no cache).
+* `$this->setVerifiedUser()` sets the user when the endpoint overloads `checkUser()` to authenticate by its own means.
+
 ## LINKS
 
 * [License](https://github.com/JcDenis/ApiServer/blob/master/LICENSE)

@@ -39,6 +39,11 @@ class ApiServer
     private array $post = [];
 
     /**
+     * The raw request body.
+     */
+    private ?string $body = null;
+
+    /**
      * The registred endpoints.
      *
      * @var    array<string, class-string>    $endpoints
@@ -225,6 +230,36 @@ class ApiServer
     public function getParams(): array
     {
         return $this->post;
+    }
+
+    /**
+     * Get API called raw request body.
+     *
+     * Used by endpoints that do not receive POST form parameters,
+     * for example a JSON body sent with application/json content type.
+     */
+    public function getBody(): string
+    {
+        if ($this->body === null) {
+            $body       = file_get_contents('php://input');
+            $this->body = $body === false ? '' : $body;
+        }
+
+        return $this->body;
+    }
+
+    /**
+     * Get API called request body as decoded JSON.
+     *
+     * Returns an empty array if body is not a JSON object or array.
+     *
+     * @return  array<int|string, mixed>
+     */
+    public function getJson(): array
+    {
+        $json = json_decode($this->getBody(), true);
+
+        return is_array($json) ? $json : [];
     }
 
     /**

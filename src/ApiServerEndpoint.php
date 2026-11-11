@@ -167,6 +167,40 @@ class ApiServerEndpoint
     }
 
     /**
+     * Set user from an ID already verified by the endpoint.
+     *
+     * Used by endpoints that overload checkUser() to authenticate user
+     * by their own means (not by password nor by API token).
+     * User MUST still have API permission on blog and a valid status.
+     *
+     * On failure, an anonymous token is set and endpoint MUST stop by itself.
+     *
+     * @param   string  $user_id    The verified user ID
+     *
+     * @return  bool    True if user is authorized
+     */
+    protected function setVerifiedUser(string $user_id): bool
+    {
+        // Variable data helpers
+        $_Int = fn (mixed $var, int $default = 0): int => $var !== null && is_numeric($val = $var) ? (int) $val : $default;
+
+        if ($user_id !== ''
+         && App::auth()->checkUser($user_id, null, null, false)             === true
+         && App::auth()->check(My::id(), App::blog()->id())                 === true
+         && !App::status()->user()->isRestricted($_Int(App::auth()->getInfo('user_status')))
+         && !App::auth()->mustChangePassword()
+        ) {
+            $this->token = ApiServerToken::newFromUser(App::auth()->userID());
+
+            return true;
+        }
+
+        $this->token = ApiServerToken::newFromUser('');
+
+        return false;
+    }
+
+    /**
      * Check user rate limit.
      */
     protected function checkRate(): void
@@ -235,6 +269,36 @@ class ApiServerEndpoint
 
         // Send content
         echo $content->encode();
+
+        exit;
+    }
+
+    /**
+     * Send raw response.
+     *
+     * Used by endpoints that do not use API response format (code, message, content),
+     * for example to serve another protocol. Response is never cached.
+     *
+     * @param   string                  $content    The response body
+     * @param   int                     $code       The HTTP status code
+     * @param   string                  $type       The response content type
+     * @param   array<string, string>   $headers    The additional HTTP headers
+     */
+    protected function sendRaw(string $content, int $code = 200, string $type = 'application/json', array $headers = []): never
+    {
+        header('User-Agent: ' . My::id() . '/' . ApiServer::VERSION);
+        header('Content-type: ' . $type);
+        header('Cache-Control: no-store');
+
+        foreach ($headers as $name => $value) {
+            header($name . ': ' . $value);
+        }
+
+        // Send status header
+        http_response_code($code);
+
+        // Send content
+        echo $content;
 
         exit;
     }
