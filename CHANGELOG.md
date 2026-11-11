@@ -1,3 +1,7 @@
+ApiServer 0.16 - 2026.11.11
+===========================================================
+* Use typed cursor method, update requirements in README
+
 ApiServer 0.15 - 2026.11.09
 ===========================================================
 * Use Dotclear 2.40 typed cursor and widget methods
