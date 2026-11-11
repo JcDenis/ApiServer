@@ -1,3 +1,7 @@
+ApiServer 1.0 - 2026.11.11
+===========================================================
+* Add raw endpoints support (request body, raw response, verified user)
+
 ApiServer 0.16 - 2026.11.11
 ===========================================================
 * Use typed cursor method, update requirements in README
