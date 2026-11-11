@@ -34,7 +34,7 @@ class Frontend
             // Add API user permission on new user registration from frontend
             'FrontendSessionAfterSignup' => function (Cursor $cur): void {
                 if (My::settings()->getBool('signup_perm', false)) {
-                    $user_id = is_string($user_id = $cur->user_id) ? $user_id : '';
+                    $user_id = $cur->strField('user_id');
                     if ($user_id !== '') {
                         $perms           = App::users()->getUserPermissions($user_id);
                         $perms           = $perms[App::blog()->id()]['p'] ?? [];

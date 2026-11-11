@@ -14,7 +14,7 @@ _ApiServer_ is a plugin for the open-source web publishing software called [Dotc
 
 ## REQUIREMENTS
 
-* Dotclear 2.39
+* Dotclear 2.40
 * PHP 8.3+
 
 ## USAGE
