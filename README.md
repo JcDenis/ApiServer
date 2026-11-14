@@ -12,6 +12,8 @@ _ApiServer_ is a plugin for the open-source web publishing software called [Dotc
 
 > Serv your Dotclear blog through API.
 
+A [user guide in French](https://github.com/JcDenis/ApiServer/blob/master/docs/fr/utilisation.md) is available.
+
 ## REQUIREMENTS
 
 * Dotclear 2.40
@@ -40,6 +42,7 @@ An endpoint can also serve another protocol than the default API format:
 
 ## LINKS
 
+* [User guide (in French)](https://github.com/JcDenis/ApiServer/blob/master/docs/fr/utilisation.md)
 * [License](https://github.com/JcDenis/ApiServer/blob/master/LICENSE)
 * [Packages & details](https://github.com/JcDenis/ApiServer/releases)
 * [Sources & contributions](https://github.com/JcDenis/ApiServer)
