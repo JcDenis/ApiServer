@@ -30,7 +30,7 @@ msgstr "Méthode non autorisée"
 
 #: src/ApiServerException.php:55
 msgid "The specified API version is not supported"
-msgstr "La version spécifiée de l'API n'est pas supportéé"
+msgstr "La version spécifiée de l'API n'est pas supportée"
 
 #: src/ApiServerException.php:56
 msgid "Missing parameter"
@@ -74,7 +74,7 @@ msgstr "Ajouter les permissions utilisateur lors de l'inscription"
 
 #: src/BackendBehaviors.php:112
 msgid "Reset anonymous API calls limit. (%d calls remaining for next %d seconds)"
-msgstr "Réinitialiser les appels anonymes à l'API. (%s appels restant pour les %d prochaines secondes)"
+msgstr "Réinitialiser les appels anonymes à l'API. (%d appels restants pour les %d prochaines secondes)"
 
 #: src/BackendBehaviors.php:118
 msgid "One minute"
