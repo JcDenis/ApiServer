@@ -50,7 +50,7 @@ Trois listes se trouvent dans le même cadre.
 * _Période de remise à zéro de la limite d'appels à l'API_ : la fenêtre de temps sur laquelle les appels sont comptés (une minute à un jour).
 * _Durée de vie du cache de l'API_ : combien de temps une réponse reste en cache (une minute à un jour).
 
-La valeur par défaut est d'une heure pour le jeton et la remise à zéro.
+La valeur par défaut est d'une heure pour les trois durées.
 
 Une liste est masquée quand la constante correspondante est définie dans le fichier de configuration (voir la dernière section).
 
@@ -153,22 +153,22 @@ Pour choisir une version de l'API, envoyez l'en-tête `X-Api-Version`. La versio
 
 Toutes les réponses ont la même forme : `code`, `message`, `content` et `cache`.
 
-| Code | Sens |
-|------|------|
-| 100 | Erreur inconnue |
-| 101 | Service fermé : l'API n'est pas activée sur ce blog |
-| 102 | Méthode non autorisée : le point d'entrée n'existe pas |
-| 103 | Version de l'API non supportée |
-| 104 | Paramètre manquant |
-| 105 | Pas de contenu |
-| 106 | Non trouvé |
-| 107 | Contributions fermées |
-| 108 | Échec de la soumission |
-| 109 | Non autorisé |
-| 200 | Ok |
-| 429 | Limite de quota de l'API atteinte |
+| Code | Sens | Statut HTTP |
+|------|------|-------------|
+| 100 | Erreur inconnue | 500 |
+| 101 | Service fermé : l'API n'est pas activée sur ce blog | 503 |
+| 102 | Méthode non autorisée : le point d'entrée n'existe pas | 405 |
+| 103 | Version de l'API non supportée | 400 |
+| 104 | Paramètre manquant | 400 |
+| 105 | Pas de contenu | 404 |
+| 106 | Non trouvé | 404 |
+| 107 | Contributions fermées | 503 |
+| 108 | Échec de la soumission | 422 |
+| 109 | Non autorisé | 401 |
+| 200 | Ok | 200 |
+| 429 | Limite de quota de l'API atteinte | 429 |
 
-Attention : le statut HTTP de la réponse reste 200 même pour une erreur. Lisez toujours le champ `code`.
+Le statut HTTP de la réponse suit le code de l'API, comme dans la dernière colonne. Le champ `code` reste le plus précis : par exemple, 103 et 104 donnent tous les deux le statut 400.
 
 ## Voir les statistiques
 
@@ -198,7 +198,7 @@ Vous pouvez fixer les durées dans le fichier de configuration de Dotclear (`con
 
 * `APISERVER_DEFAULT_TOKEN_LIFETIME` : durée de vie du jeton, en secondes.
 * `APISERVER_DEFAULT_RATE_LIFETIME` : période de remise à zéro, en secondes.
-* `API_SERVER_DEFAULT_CACHE_LIFETIME` : durée de vie du cache, en secondes.
-* `API_SERVER_DEFAULT_CALLS_LIMIT` : limite d'appels par défaut.
+* `APISERVER_DEFAULT_CACHE_LIFETIME` : durée de vie du cache, en secondes.
+* `APISERVER_DEFAULT_CALLS_LIMIT` : limite d'appels par défaut.
 
-Les noms des constantes ne suivent pas tous la même écriture : recopiez-les exactement.
+Les anciens noms `API_SERVER_DEFAULT_CACHE_LIFETIME` et `API_SERVER_DEFAULT_CALLS_LIMIT` fonctionnent toujours.
