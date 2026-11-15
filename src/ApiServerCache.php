@@ -59,12 +59,14 @@ class ApiServerCache extends ApiServerLifetime
      */
     public static function getLifeTime(): int
     {
-        if (defined('API_SERVER_DEFAULT_CACHE_LIFETIME')) {
-            $lifetime = is_numeric($lifetime = constant('API_SERVER_DEFAULT_CACHE_LIFETIME')) ? (int) $lifetime : 3600;
+        // Old constant name API_SERVER_DEFAULT_CACHE_LIFETIME is still supported
+        $const = defined('APISERVER_DEFAULT_CACHE_LIFETIME') ? 'APISERVER_DEFAULT_CACHE_LIFETIME' : 'API_SERVER_DEFAULT_CACHE_LIFETIME';
+        if (defined($const)) {
+            $lifetime = is_numeric($lifetime = constant($const)) ? (int) $lifetime : 3600;
         } elseif (My::settings()->getInt('cache_lifetime', false) > 0) {
             $lifetime = My::settings()->getInt('cache_lifetime', false);
         } else {
-            $lifetime = 600;
+            $lifetime = 3600;
         }
 
         return $lifetime;

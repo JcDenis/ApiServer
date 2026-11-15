@@ -157,7 +157,7 @@ class BackendBehaviors
                 ]);
         }
 
-        if (!defined('APISERVER_DEFAULT_CACHE_LIFETIME')) {
+        if (!defined('APISERVER_DEFAULT_CACHE_LIFETIME') && !defined('API_SERVER_DEFAULT_CACHE_LIFETIME')) {
             $values = [
                 __('One minute')      => '60',
                 __('Fifteen minutes') => '900',
@@ -211,7 +211,7 @@ class BackendBehaviors
             $blog_settings->get(My::id())->put('rate_lifetime', $rate_lifetime, App::blogWorkspace()::NS_INT);
         }
 
-        if (!defined('APISERVER_DEFAULT_CACHE_LIFETIME') && !empty($_POST[My::id() . 'cache_lifetime'])) {
+        if (!defined('APISERVER_DEFAULT_CACHE_LIFETIME') && !defined('API_SERVER_DEFAULT_CACHE_LIFETIME') && !empty($_POST[My::id() . 'cache_lifetime'])) {
             $cache_lifetime = is_numeric($cache_lifetime = $_POST[My::id() . 'cache_lifetime']) ? (int) $cache_lifetime : 600;
             $blog_settings->get(My::id())->put('cache_lifetime', $cache_lifetime, App::blogWorkspace()::NS_INT);
         }
