@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\ApiServer;
 
 use Dotclear\App;
-use Dotclear\Helper\Network\Http;
 
 /**
  * @brief       ApiServer core endpoint.
@@ -265,7 +264,7 @@ class ApiServerEndpoint
         $this->cache->sendHeaders();
 
         // Send status header
-        Http::head($content->code);
+        http_response_code($content->code);
 
         // Send content
         echo $content->encode();

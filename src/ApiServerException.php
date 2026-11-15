@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\ApiServer;
 
-use Dotclear\Helper\Network\Http;
 use Exception;
 
 /**
@@ -24,19 +23,17 @@ class ApiServerException extends Exception
      */
     public function __construct(int $code, string $message = '')
     {
-        $head  = null;
         $codes = self::codes();
         if (!isset($codes[$code])) {
             $code = 100;
-            $head = 400;
         }
 
         if ($message === '') {
-            $message = $codes[$code] ?? '';
-            $head    = 200;
+            $message = $codes[$code];
         }
 
-        Http::head($head ?? $code);
+        // API code is in response content, HTTP status follows it
+        http_response_code(self::httpCode($code));
         ApiServer::sendHeaders();
         echo (new ApiServerResponse(code: $code, message: $message))->encode();
         exit(1);
@@ -63,5 +60,25 @@ class ApiServerException extends Exception
             200 => __('Ok'),
             429 => __('API rate limit reach.'),
         ];
+    }
+
+    /**
+     * Get HTTP status code of an API code.
+     *
+     * API codes from 100 to 110 are not HTTP codes and must not be sent as is.
+     */
+    public static function httpCode(int $code): int
+    {
+        return match ($code) {
+            101, 107 => 503,
+            102      => 405,
+            103, 104 => 400,
+            105, 106 => 404,
+            108      => 422,
+            109      => 401,
+            200      => 200,
+            429      => 429,
+            default  => 500,
+        };
     }
 }
