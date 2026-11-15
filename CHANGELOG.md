@@ -1,3 +1,10 @@
+ApiServer 1.1 - 2026.11.15
+===========================================================
+* [fix] Cache and calls limit constants names, cache lifetime fallback
+* [lang] Fix typos
+* [fix] Errors are sent with a real HTTP status code
+* [docs] Add a user guide in French, with screenshots
+
 ApiServer 1.0 - 2026.11.11
 ===========================================================
 * Add raw endpoints support (request body, raw response, verified user)

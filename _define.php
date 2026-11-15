@@ -22,7 +22,7 @@ $this->registerModule(
     'Dotclear public API',
     'Serv your blog through API',
     'Jean-Christian Paul Denis',
-    '1.0',
+    '1.1',
     [
         'requires' => [
             ['php', '8.3'],
@@ -37,6 +37,6 @@ $this->registerModule(
         'support'     => 'https://github.com/JcDenis/' . $this->id . '/issues',
         'details'     => 'https://github.com/JcDenis/' . $this->id . '/blob/master/README.md',
         'repository'  => 'https://raw.githubusercontent.com/JcDenis/' . $this->id . '/master/dcstore.xml',
-        'date'        => '2026-11-11T14:54:23+00:00',
+        'date'        => '2026-11-15T09:22:58+00:00',
     ]
 );
