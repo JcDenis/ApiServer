@@ -180,11 +180,16 @@ Le plugin peut compter les appels de chaque point d'entrée et les montrer sur v
 
 ![Option des statistiques dans les préférences](img/preferences-tableau-de-bord.png)
 
-Un cadre apparaît ensuite sur la page d'accueil de l'administration. Il liste les points d'entrée appelés depuis la dernière remise à zéro.
+Un cadre apparaît ensuite sur la page d'accueil de l'administration. Il liste les points d'entrée appelés depuis la dernière remise à zéro, les plus utilisés en premier. Pour chacun, il donne deux nombres :
+
+* _réussis_ : les appels qui ont reçu une réponse normale ;
+* _en erreur_ : les appels refusés ou en échec, par exemple sans autorisation, avec un paramètre manquant ou au-delà de la limite d'appels.
+
+Les appels vers un point d'entrée qui n'existe pas ne sont pas comptés. Les statistiques sont propres à chaque blog.
 
 ![Statistiques de l'API sur le tableau de bord](img/tableau-de-bord-statistiques.png)
 
-Le bouton _Effacer les statistiques_ remet les compteurs à zéro.
+Le bouton _Effacer les statistiques_ remet les compteurs à zéro pour ce blog.
 
 ## Vider le cache
 
