@@ -61,6 +61,11 @@ class ApiServer
     private string $version = '';
 
     /**
+     * The endpoint to count in statistics, once known.
+     */
+    private static string $stat_endpoint = '';
+
+    /**
      * Create a new API server instance.
      *
      * @param   string  $args   The URI arguments
@@ -103,6 +108,9 @@ class ApiServer
                 throw new ApiServerException(102);
             }
 
+            // From here, the call is counted when its response is sent
+            self::$stat_endpoint = $this->endpoint;
+
             $class = $this->endpoints[$this->endpoint];
 
             /**
@@ -120,8 +128,6 @@ class ApiServer
                     $this->post[$field] = (string) $_POST[$field];
                 }
             }
-
-            ApiServerLogs::addLog($this->endpoint);
 
             // Load API endpoint
             new $class($this);
@@ -169,6 +175,22 @@ class ApiServer
             ) {
                 $this->endpoints[$endpoint::ID] = $endpoint;
             }
+        }
+    }
+
+    /**
+     * Count the called endpoint in statistics, once.
+     *
+     * Called just before a response is sent: the database
+     * is no more available when the script ends.
+     *
+     * @param   int     $code   The HTTP status code of the response
+     */
+    public static function countCall(int $code): void
+    {
+        if (self::$stat_endpoint !== '') {
+            ApiServerStats::addCall(self::$stat_endpoint, $code >= 200 && $code < 400);
+            self::$stat_endpoint = '';
         }
     }
 

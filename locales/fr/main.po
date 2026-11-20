@@ -125,6 +125,12 @@ msgid "Display API server statistics on dashboard"
 msgstr "Afficher les statistiques de l'API sur le tableau de bord"
 
 #: src/BackendBehaviors.php:265
+msgid "API statistics have been cleared."
+msgstr "Les statistiques de l'API ont été effacées."
+
+msgid "succeeded: %d, failed: %d"
+msgstr "réussis : %d, en erreur : %d"
+
 msgid "No statistics"
 msgstr "Aucune statistique"
 

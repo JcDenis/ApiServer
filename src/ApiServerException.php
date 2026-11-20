@@ -32,6 +32,9 @@ class ApiServerException extends Exception
             $message = $codes[$code];
         }
 
+        // Count the call
+        ApiServer::countCall(self::httpCode($code));
+
         // API code is in response content, HTTP status follows it
         http_response_code(self::httpCode($code));
         ApiServer::sendHeaders();

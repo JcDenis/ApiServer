@@ -24,6 +24,7 @@ use Dotclear\Helper\Html\Form\Strong;
 use Dotclear\Helper\Html\Form\Submit;
 use Dotclear\Helper\Html\Form\Text;
 use Dotclear\Helper\Html\Form\Ul;
+use Dotclear\Helper\Html\Html;
 use Dotclear\Interface\Core\BlogSettingsInterface;
 use Dotclear\Plugin\maintenance\Maintenance;
 use Exception;
@@ -263,47 +264,56 @@ class BackendBehaviors
     {
         if (My::prefs()->getBool('dashboard_statistics', false)) {
             if (!empty($_POST[My::id() . 'dellogs'])) {
-                ApiServerLogs::delLogs();
-            }
-
-            $lines = [];
-
-            if (($logs = ApiServerLogs::parseLogs()) !== []) {
-                foreach ($logs as $key => $value) {
-                    $lines[] = (new Li())
-                        ->separator(' : ')
-                        ->items([
-                            (new Strong($key)),
-                            (new Text(null, (string) $value)),
-                        ]);
+                try {
+                    ApiServerStats::delStats();
+                    App::backend()->notices()->addSuccessNotice(__('API statistics have been cleared.'));
+                    App::backend()->url()->redirect('admin.home');
+                } catch (Exception $exception) {
+                    App::error()->add($exception->getMessage());
                 }
             }
 
+            $lines = [];
+            foreach (ApiServerStats::getStats() as $endpoint => $stat) {
+                $lines[] = (new Li())
+                    ->separator(' — ')
+                    ->items([
+                        (new Strong(Html::escapeHTML($endpoint))),
+                        (new Text(null, sprintf(__('succeeded: %d, failed: %d'), $stat['success'], $stat['error']))),
+                    ]);
+            }
+
+            $items = [
+                (new Text('h3', (new Img(My::icons()[0]))->class('icon-small')->render() . ' ' . My::name())),
+            ];
+
             if ($lines === []) {
-                $lines[] = (new Li())->text(__('No statistics'));
+                $items[] = (new Ul())
+                    ->items([
+                        (new Li())->text(__('No statistics')),
+                    ]);
+            } else {
+                $items[] = (new Note())
+                    ->text(sprintf(__('Public API endpoints usage since %s'), ApiServerStats::getDate()));
+                $items[] = (new Ul())
+                    ->items($lines);
+                $items[] = (new Form(My::id() . '-form'))
+                    ->method('post')
+                    ->action(App::backend()->url()->get('admin.home'))
+                    ->fields([
+                        (new Para())
+                            ->class('form-buttons')
+                            ->items([
+                                (new Submit(My::id() . 'dellogs', __('Clear statistics'))),
+                                App::nonce()->formNonce(),
+                            ]),
+                    ]);
             }
 
             $res = (new Div(My::id() . 'statistics'))
                 ->class(['box', 'small'])
-                ->items([
-                    (new Text('h3', (new Img(My::icons()[0]))->class('icon-small')->render() . ' ' . My::name())),
-                    (new Note())
-                        ->text(sprintf(__('Public API endpoints usage since %s'), ApiServerLogs::parseDate())),
-                    (new Ul())
-                        ->items($lines),
-                    (new Form(My::id() . '-form'))
-                        ->method('post')
-                        ->action(App::backend()->url()->get('admin.home'))
-                        ->items([
-                            (new Para())
-                                ->class('form-buttons')
-                                ->items([
-                                    (new Submit(My::id() . 'dellogs', __('Clear statistics'))),
-                                    App::nonce()->formNonce(),
-                                ]),
-                        ]),
-                ])
-            ->render();
+                ->items($items)
+                ->render();
 
             $contents->append(new ArrayObject([$res]));
         }

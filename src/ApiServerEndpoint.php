@@ -251,6 +251,9 @@ class ApiServerEndpoint
      */
     protected function sendContent(ApiServerResponse $content): void
     {
+        // Count the call
+        ApiServer::countCall($content->code);
+
         // Write cache
         $this->cache->writeCache($content);
 
@@ -285,6 +288,9 @@ class ApiServerEndpoint
      */
     protected function sendRaw(string $content, int $code = 200, string $type = 'application/json', array $headers = []): never
     {
+        // Count the call
+        ApiServer::countCall($code);
+
         header('User-Agent: ' . My::id() . '/' . ApiServer::VERSION);
         header('Content-type: ' . $type);
         header('Cache-Control: no-store');

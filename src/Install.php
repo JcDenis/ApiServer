@@ -33,6 +33,23 @@ class Install
         }
 
         try {
+            // Statistics table: one record per blog and endpoint
+            $struct = App::db()->structure();
+
+            $struct->table(ApiServerStats::TABLE_NAME)
+                ->field('blog_id', 'varchar', 32, false)
+                ->field('stat_endpoint', 'varchar', ApiServerStats::ENDPOINT_LENGTH, false)
+                ->field('stat_success', 'bigint', 0, false, 0)
+                ->field('stat_error', 'bigint', 0, false, 0)
+                ->field('stat_dt', 'timestamp', 0, false, 'now()')
+
+                ->primary('pk_apiserver_stat', 'blog_id', 'stat_endpoint')
+                // Statistics of a blog are deleted with the blog.
+                ->reference('fk_apiserver_stat_blog', 'blog_id', 'blog', 'blog_id', 'cascade', 'cascade')
+            ;
+
+            App::db()->structure()->synchronize($struct);
+
             // Upgrade from version < 0.13: move users rate limits from user options to user preferences
             $current = App::version()->getVersion(My::id());
             if ($current !== '' && version_compare($current, '0.13', '<')) {
