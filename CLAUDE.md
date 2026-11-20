@@ -22,9 +22,9 @@ Required Dotclear and PHP versions: see `_define.php`.
 * `src/ApiServerEndpoint.php`: core endpoint.
 * `src/ApiServerException.php`: core exception.
 * `src/ApiServerLifetime.php`: core timestamp helper.
-* `src/ApiServerLogs.php`: core logs helper.
 * `src/ApiServerRate.php`: core rate limit.
 * `src/ApiServerResponse.php`: core reponse.
+* `src/ApiServerStats.php`: dashboard statistics, table `apiserver_stat` (one record per blog and endpoint, success and error counters incremented in SQL).
 * `src/ApiServerToken.php`: core token.
 * `src/Backend.php`: admin side: menu entry, favorites, behaviors registration.
 * `src/BackendBehaviors.php`: admin behaviors.
@@ -43,6 +43,7 @@ Required Dotclear and PHP versions: see `_define.php`.
 ## Pitfalls
 
 * Other modules talk through it: DotclearWatch, DotclearWatchServer, daContribute and ClaudetteMcp (raw endpoint). A change of its endpoints or answers must keep them working.
+* Statistics are counted by `ApiServer::countCall()` just before a response is sent (`sendContent()`, `sendRaw()`, `ApiServerException`): a new exit point must call it too. Never count in a shutdown function: Dotclear has already closed the database and queries fail silently.
 * Data migrations example: user options moved to user preferences in 0.13, see `src/Install.php`.
 
 ## Testing
