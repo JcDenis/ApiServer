@@ -1,3 +1,8 @@
+ApiServer 1.2 - 2026.11.20
+===========================================================
+* [fix] Exact dashboard statistics and working clear button, calls counted as succeeded or failed
+* [docs] Update dashboard statistics in user guide
+
 ApiServer 1.1 - 2026.11.15
 ===========================================================
 * [fix] Cache and calls limit constants names, cache lifetime fallback
